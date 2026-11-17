@@ -12,6 +12,7 @@ related:
   - "[[v1.3.0.2 First Modrinth release]]"
   - "[[v1.3.0.3 Tags faded, controls beside the book]]"
   - "[[v1.3.1.0 Link codes instead of web addresses]]"
+  - "[[v1.3.1.1 Bracket text and fitted pictures]]"
 created: 2026-11-17
 updated: 2026-11-17
 ---
@@ -25,7 +26,8 @@ What shipped in each version. `CHANGELOG.md` in the repository stays the line-by
 
 ## Key documents
 
-- [[v1.3.1.0 Link codes instead of web addresses]]: books store `imgur:<id>` or `u:<base64url>` instead of the web address, so servers that filter links accept them; versions before 1.3.1.0 cannot read the codes; not yet checked in game or released
+- [[v1.3.1.1 Bracket text and fitted pictures]]: bracketed text such as `[1]` no longer breaks pictures (tags counted by `ImageTags`, link part without commas, brackets or whitespace); new pictures start on the page text area and shrink to fit it; the size-limit log says 8 MB; ships the link codes of 1.3.1.0; not yet checked in game or released
+- [[v1.3.1.0 Link codes instead of web addresses]]: books store `imgur:<id>` or `u:<base64url>` instead of the web address, so servers that filter links accept them; versions before 1.3.1.0 cannot read the codes; committed as `a5bc93c`, never released, superseded by 1.3.1.1 (archived)
 - [[v1.3.0.3 Tags faded, controls beside the book]]: image tags hidden in the reader and faded in the editor; the image controls moved to a panel beside the book, clear of Stendhal's toolbar; tagged `v1.3.0.3` on 2026-11-17
 - [[v1.3.0.2 First Modrinth release]]: mod unchanged; fixes the CI Mixin check that stopped 1.3.0.1; the first version on Modrinth, released 2026-11-17
 - [[v1.3.0.1 Modrinth releases from CI]]: mod unchanged; releases published to Modrinth from a version tag by `tools/publish_modrinth.py`; never released (archived)
@@ -33,7 +35,7 @@ What shipped in each version. `CHANGELOG.md` in the repository stays the line-by
 
 ## Status
 
-- Covered: 1.3.0.0, the first release of the fork; 1.3.0.1, which added publishing from CI but was never released; 1.3.0.2, the first version on Modrinth, released 2026-11-17; 1.3.0.3, the fixes from the owner's in-game test of 1.3.0.2 with Stendhal, pushed and tagged `v1.3.0.3` on commit `b059d7b` on 2026-11-17; 1.3.1.0, link codes instead of web addresses, waiting for the owner's in-game check before release.
+- Covered: 1.3.0.0, the first release of the fork; 1.3.0.1, which added publishing from CI but was never released; 1.3.0.2, the first version on Modrinth, released 2026-11-17; 1.3.0.3, the fixes from the owner's in-game test of 1.3.0.2 with Stendhal, pushed and tagged `v1.3.0.3` on commit `b059d7b` on 2026-11-17; 1.3.1.0, link codes instead of web addresses, committed as `a5bc93c` and superseded before release; 1.3.1.1, the current version, fixes for bracketed text and fitted new pictures on top of the link codes, waiting for the owner's in-game check before release with the tag `v1.3.1.1`.
 - Upstream history before the fork (1.2.9 and earlier) is summarised only as the starting point inside the 1.3.0.0 note.
 
 ## All notes

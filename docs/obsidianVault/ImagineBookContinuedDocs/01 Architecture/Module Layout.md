@@ -4,11 +4,12 @@ status: active
 priority: high
 tags: [architecture, mixin, fabric]
 aliases: [Package layout, Source layout]
-summary: "What each package and class under io.github.jumperonjava.imaginebook does: entry point, the tag wire format and link codes, tag parsing and display, image resolvers and downloader, the viewer, editor and text box Mixins, the control panel layout, utilities."
+summary: "What each package and class under io.github.jumperonjava.imaginebook does: entry point, the tag pattern, wire format and link codes, tag parsing and display, image resolvers and downloader, the viewer, editor and text box Mixins, new-picture fitting, the control panel layout, utilities."
 related:
   - "[[Stendhal Compatibility]]"
   - "[[Fade tags in the editor, hide them in the reader]]"
   - "[[Store link codes, not pictures, in book text]]"
+  - "[[v1.3.1.1 Bracket text and fitted pictures]]"
   - "[[Build and Test]]"
   - "[[Single Fabric 26.3 target]]"
 created: 2026-11-17
@@ -19,11 +20,21 @@ updated: 2026-11-17
 
 ## Summary
 
-All code lives in one Fabric source set under `src/main/java/io/github/jumperonjava/imaginebook`, the package name kept from upstream. The mod reads image tags from book page text, resolves each tag to a texture (downloaded, cached or from a resource pack) and draws it through Mixins into the vanilla book viewer and book editor. Eight Mixins are registered in `src/main/resources/imaginebook.mixins.json`, all client-side, with `defaultRequire: 1` so an injection that does not apply is an error. Since 1.3.0.3 the tag text is hidden in the viewer and faded in the editor, so it no longer covers the picture. Since 1.3.1.0 the link in a tag is stored as a code, so book text holds no web address.
+All code lives in one Fabric source set under `src/main/java/io/github/jumperonjava/imaginebook`, the package name kept from upstream. The mod reads image tags from book page text, resolves each tag to a texture (downloaded, cached or from a resource pack) and draws it through Mixins into the vanilla book viewer and book editor. Eight Mixins are registered in `src/main/resources/imaginebook.mixins.json`, all client-side, with `defaultRequire: 1` so an injection that does not apply is an error. Since 1.3.0.3 the tag text is hidden in the viewer and faded in the editor, so it no longer covers the picture. Since 1.3.1.0 the link in a tag is stored as a code, so book text holds no web address. Since 1.3.1.1 bracketed text such as `[1]` is never taken for a tag, and a new picture starts on the page's text area, fitted to it.
 
 ## Context
 
-The image format is plain page text, so a book stays valid for players without the mod. A tag is `[link,x,y,width%,height%,rotation]`; `x` and `y` are required, one size number sets both width and height, and the link part chooses a resolver by its prefix up to the first colon. `ImageData.getImage()` splits the link at the first colon and hands the rest to the resolver registered for the prefix in `Imaginebook`; an unknown prefix gives the error image. One regex, `util/ImageTags.PATTERN`, defines a tag for both parsing and display: a link without commas, then two to five numbers, so `[note]`, `[a,b]` and `[x,1]` stay plain text.
+The image format is plain page text, so a book stays valid for players without the mod. A tag is `[link,x,y,width%,height%,rotation]`; `x` and `y` are required, one size number sets both width and height, and the link part chooses a resolver by its prefix up to the first colon. `ImageData.getImage()` splits the link at the first colon and hands the rest to the resolver registered for the prefix in `Imaginebook`; an unknown prefix gives the error image. What counts as a tag is set by one regex, see [[#Tag pattern]].
+
+### Tag pattern
+
+One regex, `util/ImageTags.PATTERN`, defines a tag everywhere: parsing (`ImageSerializer`), hiding in the reader (`BookScreenMixin`), fading in the editor (`MultiLineEditBoxMixin`) and rewriting a tag (`NewBookEditScreenMixin` through `ImageTags.replace`). Since 1.3.1.1:
+
+`\[[^,\[\]\s]*?(,[+-]?\d+(\.\d+)?){2,5}\]`
+
+A link part with no comma, no bracket and no whitespace, then two to five numbers. So `[note]`, `[a,b]`, `[x,1]` and `[1]` stay plain text, and a tag never runs across lines.
+
+From the original mod through 1.3.1.0 the link part excluded only commas: `\[[^,]*?(,[+-]?\d+(\.\d+)?){2,5}\]`. Bracketed text before a tag then became part of it: `[1] and [note]: [https://...,1,2]` was one tag whose link began at `1]`, so a picture after bracketed text on the same line never showed, and a tag could run across lines. Tags written by any version with a real link still parse, and link codes contain none of the excluded characters. See [[v1.3.1.1 Bracket text and fitted pictures]].
 
 ### Wire format of the link part
 
@@ -59,7 +70,7 @@ Codes contain no scheme, no dot and no comma. Versions before 1.3.1.0 have no `i
 - `UrlResolver`: one instance per scheme, all sharing one `AsyncImageDownloader`.
 - `TextureResolver`: parses the `res:` path as an `Identifier`; an invalid id gives the error image.
 - `CodedLinkResolver`: two instances, `IMGUR` and `CODED`, for the `imgur:` and `u:` link codes (since 1.3.1.0). Puts the prefix back, decodes with `LinkCodes.decode` and hands an `https://` or `http://` result to `UrlResolver.INSTANCE_S` or `INSTANCE`; anything else, a `res:` path or a code inside a code, gives the error image.
-- `AsyncImageDownloader`: one daemon thread ("ImagineBook image downloader"). Caches files under `<game dir>/imaginebook/<host>/<path hash>.cache`, decodes with `ImageIO` (WebP through the bundled `webp-imageio`) and re-encodes to PNG. Connect timeout 10 s, read timeout 15 s, a User-Agent header. Shows placeholder textures while downloading or on error (`downloading.png`, `not_loaded.png`, `size_error.png`, `invalid_url.png`).
+- `AsyncImageDownloader`: one daemon thread ("ImagineBook image downloader"). Caches files under `<game dir>/imaginebook/<host>/<path hash>.cache`, decodes with `ImageIO` (WebP through the bundled `webp-imageio`) and re-encodes to PNG. Connect timeout 10 s, read timeout 15 s, a User-Agent header. Shows placeholder textures while downloading or on error (`downloading.png`, `not_loaded.png`, `size_error.png`, `invalid_url.png`). A download over 8 MB is refused and shows `size_error.png`; until 1.3.1.1 its log message called the limit 1 MB.
 - `RetryPolicy`: a failed URL waits 30 s times the number of failures and is given up after 3 failures until the game restarts. Pinned by `RetryPolicyTest`.
 
 ### `mixin/`
@@ -67,7 +78,7 @@ Codes contain no scheme, no dot and no comma. Versions before 1.3.1.0 have no `i
 | Mixin | Target | Role |
 |---|---|---|
 | `BookScreenMixin` | `BookViewScreen` | The viewer. Parses every page, tags included, on construction and on `setBookAccess`, draws the images at the head of `extractRenderState` so vanilla text and controls draw on top. `imaginebook$hideTags` (`@ModifyExpressionValue` on `BookAccess.getPage(I)` inside `visitText`) hands the viewer the page without its tags, styles kept, so the tag text is not drawn and clicks on styled text match what is shown. |
-| `NewBookEditScreenMixin` | `BookEditScreen` | The editor. Parses pages after the constructor, implements `BookEditScreenHooks.imaginebook$afterInit()` which adds the URL field, Add and Remove buttons and the x, y, width, height and rotation controls at the slots `util/ControlPanelLayout` picks, handles paste in `keyPressed` through `BookPaste`, and draws in `extractRenderState`. Every use of its widgets tolerates null. The URL field shows the real link and the book stores its code: the responder writes `LinkCodes.encode(Imaginebook.fixImgurLink(url))` and returns early when the field equals the decoded stored link; `updateFields()` fills the field with `LinkCodes.decode(...)`. A link over 255 characters shows `imaginebook.error.url_too_long`. |
+| `NewBookEditScreenMixin` | `BookEditScreen` | The editor. Parses pages after the constructor, implements `BookEditScreenHooks.imaginebook$afterInit()` which adds the URL field, Add and Remove buttons and the x, y, width, height and rotation controls at the slots `util/ControlPanelLayout` picks, handles paste in `keyPressed` through `BookPaste`, and draws in `extractRenderState`. Every use of its widgets tolerates null. The URL field shows the real link and the book stores its code: the responder writes `LinkCodes.encode(Imaginebook.fixImgurLink(url))` and returns early when the field equals the decoded stored link; `updateFields()` fills the field with `LinkCodes.decode(...)`. A link over 255 characters shows `imaginebook.error.url_too_long`. `mutateImage` rewrites a picture's tag with `ImageTags.replace`, counting image tags only, as the picture list does (since 1.3.1.1; before, it counted every `[..]` on the page). Add image creates a picture at the corner of the page's text area (`ImageFit.PAGE_X`, `PAGE_Y`); entering a link marks it, and `imaginebook$fitLoaded()`, run from the render hook, shrinks it with `ImageFit.percent` once the real picture has loaded (since 1.3.1.1). |
 | `MultiLineEditBoxMixin` | `MultiLineEditBox` | Fades image tags in the book editor's text box to about 15 % alpha. Two `@ModifyExpressionValue` hooks in `extractContents` record the line's `StringView.beginIndex()` and `endIndex()` (`StringView` is package-private in 26.3, so a handler cannot take it). Three `@WrapOperation` hooks on `GuiGraphicsExtractor.text` (ordinal 0 the part before the cursor, 1 the part after it, 2 a line without the cursor) draw the line in pieces, tags faded and without shadow. Only while the open screen is a `BookEditScreen`. See [[Fade tags in the editor, hide them in the reader]]. |
 | `ScreenInitMixin` | `Screen` | Calls `imaginebook$afterInit()` right after `Screen.init(II)V` and `Screen.rebuildWidgets()V` have called `init()`. See [[Stendhal Compatibility]]. |
 | `MinecraftClientMixin` | `net.minecraft.client.gui.Gui` | Despite the name, hooks `setScreen`: keeps the editor open while `Imaginebook.cancelledFinalize` is set. `updateFields()` in the editor never sets the flag at present (its error list is always empty), so this path is dormant. |
@@ -78,8 +89,9 @@ Codes contain no scheme, no dot and no comma. Versions before 1.3.1.0 have no `i
 ### `util/`
 
 - `BookPaste`: plans a paste before the book changes: replaces the selection, splits the result over pages within the character limit and the page width, prefers a word or line boundary, keeps surrogate pairs whole, and refuses (empty result) when the pages run out. Pinned by `BookPasteTest`.
-- `ImageTags`: the tag regex and how tags are shown; the page text always keeps them. `find` returns tag spans; `strip(Component)` rebuilds a page without its tags, every style kept, and returns the same object when there are none (used by the viewer); `pieces` splits an editor line at tag borders, a text piece after a tag starting with the formatting codes active before it (`activeFormatting`); `faded` sets alpha `0x26`. Pinned by `ImageTagsTest`.
+- `ImageTags`: the tag regex ([[#Tag pattern]]) and how tags are shown; the page text always keeps them. `find` returns tag spans; `replace(page, index, replacement)` swaps the index-th image tag, counted as the picture list counts them, and leaves the page unchanged for an index outside the tags (since 1.3.1.1); `strip(Component)` rebuilds a page without its tags, every style kept, and returns the same object when there are none (used by the viewer); `pieces` splits an editor line at tag borders, a text piece after a tag starting with the formatting codes active before it (`activeFormatting`); `faded` sets alpha `0x26`. Pinned by `ImageTagsTest`.
 - `LinkCodes`: how a link is written into the book (since 1.3.1.0). `encode` turns an Imgur single-picture link into `imgur:<id>` and any other `http(s)` link into `u:` plus base64url of its UTF-8 bytes without padding; anything else passes through, so encoding is idempotent. `decode` opens `imgur:<id>` as `https://i.imgur.com/<id>.png` (downloads are decoded by content, so the extension does not matter) and `u:` as the exact link; a code that does not decode comes back unchanged. `isWebLink` checks for `http://` or `https://`. Pinned by `LinkCodesTest`; see [[Store link codes, not pictures, in book text]].
+- `ImageFit`: where a new picture starts and how big it may get (since 1.3.1.1). `PAGE_X` 36 and `PAGE_Y` 30 are `BookViewScreen.PAGE_TEXT_X_OFFSET` and `PAGE_TEXT_Y_OFFSET`, `PAGE_WIDTH` 114 and `PAGE_HEIGHT` 126 are `BookEditScreen.TEXT_WIDTH` and `TEXT_HEIGHT`, all from 26.3. `percent(w, h)` gives the largest whole percent, 1 to 100, at which a picture of that pixel size fits the area; 100 % is the picture's own pixel size. Pictures already in books are never refitted. Pinned by `ImageFitTest`.
 - `ControlPanelLayout`: where the image controls go on the editor. A 5-row panel up to 200 px wide in the first free spot left of the book, then right, clear of every widget on the screen and of the bottom 54 px where Stendhal's toolbar sits; the old two bottom rows only when no spot fits. Pinned by `ControlPanelLayoutTest`; see [[Stendhal Compatibility]].
 - `ImageRenderPipeline`: registers `imaginebook:pipeline/gui_textured_nocull`, the GUI textured pipeline without back-face culling, so mirrored images still draw. The Mixin smoke mod asserts this.
 - `VersionFunctions`: thin wrappers over the GUI pose stack and texture drawing.
@@ -97,7 +109,7 @@ Codes contain no scheme, no dot and no comma. Versions before 1.3.1.0 have no `i
 ### Outside `src/main`
 
 - `src/smoke/`: a development-only mod for the windowless Mixin check, never shipped (see [[Build and Test]]).
-- `src/test/`: JUnit 5 tests: `BookPasteTest`, `RetryPolicyTest`, `ImageTagsTest`, `LinkCodesTest`, `ControlPanelLayoutTest`, `StendhalCompatSourceTest`, `CiWorkflowTest`, `VersionDriftTest`.
+- `src/test/`: JUnit 5 tests: `BookPasteTest`, `RetryPolicyTest`, `ImageTagsTest`, `ImageFitTest`, `LinkCodesTest`, `ControlPanelLayoutTest`, `StendhalCompatSourceTest`, `CiWorkflowTest`, `VersionDriftTest`.
 - `src/main/resources/assets/imaginebook/`: icon, placeholder textures, `en_us`, `ru_ru` and `uk_ua` language files.
 
 ## Links
@@ -106,5 +118,6 @@ Codes contain no scheme, no dot and no comma. Versions before 1.3.1.0 have no `i
 - [[Fade tags in the editor, hide them in the reader]]
 - [[Store link codes, not pictures, in book text]]
 - [[v1.3.1.0 Link codes instead of web addresses]]
+- [[v1.3.1.1 Bracket text and fitted pictures]]
 - [[Build and Test]]
 - [[06 Decisions]]

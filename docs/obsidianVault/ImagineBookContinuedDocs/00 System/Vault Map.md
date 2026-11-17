@@ -27,7 +27,7 @@ Where things live in the ImagineBook Continued vault. Skim this before creating 
 - **What it does:** adds images to book and quill and written books. An image is a text tag on the page, `[link,x,y,width%,height%,rotation]`. Since 1.3.1.0 the editor stores a web link as a code, `imgur:<id>` or `u:<base64url>`, so the book holds no web address; plain `http:` and `https:` links in older books still work, and `res:` takes a resource id. The mod is client-side only; other players who have it (1.3.1.0 or later, for codes) see the images, players without it see the tag text.
 - **Target:** Minecraft 26.3 (unobfuscated, Mojang names at runtime), Fabric Loader 0.20.1, Fabric API, Java 25. Stendhal is an optional companion mod.
 - **Licence:** LGPL-3.0-only (`LICENSE`).
-- **Version:** single source is the `VERSION` file (1.3.0.0 when this vault was created), odometer style, one digit per part. `VersionDriftTest` holds `build.gradle`, `fabric.mod.json`, `tools/build_local.py` and the newest `CHANGELOG.md` heading to it.
+- **Version:** single source is the `VERSION` file (1.3.1.1 now, 1.3.0.0 when this vault was created), odometer style, one digit per part. `VersionDriftTest` holds `build.gradle`, `fabric.mod.json`, `tools/build_local.py` and the newest `CHANGELOG.md` heading to it.
 - **Branches:** day-to-day work on `main`, releases on `product`.
 - **Distribution:** Modrinth, slug `imaginebook-continued`.
 
@@ -36,7 +36,7 @@ Where things live in the ImagineBook Continued vault. Skim this before creating 
 | Need | Go to |
 |---|---|
 | Which class does what | [[Module Layout]] |
-| How an image is stored in the book, link codes | [[Module Layout#Wire format of the link part]], [[Store link codes, not pictures, in book text]] |
+| How an image is stored in the book, the tag pattern, link codes | [[Module Layout#Tag pattern]], [[Module Layout#Wire format of the link part]], [[Store link codes, not pictures, in book text]] |
 | Why the editor widgets are added from `Screen`, the Stendhal crash | [[Stendhal Compatibility]] |
 | Building, testing and the Mixin check, locally and in CI | [[Build and Test]] |
 | Shipping a version | [[Release to Modrinth]] |

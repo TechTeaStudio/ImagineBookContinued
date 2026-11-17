@@ -8,6 +8,9 @@ import io.github.jumperonjava.imaginebook.util.DeletedImageData;
 import io.github.jumperonjava.imaginebook.util.BookPaste;
 import io.github.jumperonjava.imaginebook.util.ControlPanelLayout;
 import io.github.jumperonjava.imaginebook.util.LinkCodes;
+import io.github.jumperonjava.imaginebook.util.ImageFit;
+import io.github.jumperonjava.imaginebook.util.ImageTags;
+import io.github.jumperonjava.imaginebook.resolvers.AsyncImageDownloader;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.BookEditScreen;
@@ -168,6 +171,34 @@ public abstract class NewBookEditScreenMixin extends Screen implements BookEditS
 
     int currentEdited = -1;
 
+    // The picture whose link was just entered: fitted into the page once it has loaded (ImageFit).
+    private int imaginebook$fitImage = -1;
+    private int imaginebook$fitPage = -1;
+
+    private void imaginebook$fitLoaded() {
+        if (imaginebook$fitImage < 0) return;
+        ImageData image = imaginebook$fitPage == currentPage ? getCurrentPageImage(imaginebook$fitImage) : null;
+        if (image == null) {
+            imaginebook$fitImage = -1;
+            return;
+        }
+        var drawable = image.getImage();
+        // A placeholder (downloading, failed, too big, bad link) is not the picture yet: keep waiting.
+        if (drawable == AsyncImageDownloader.ERROR_IMAGE || drawable == AsyncImageDownloader.DOWNLOADING_IMAGE
+                || drawable == AsyncImageDownloader.SIZE_ERROR || drawable == AsyncImageDownloader.URI_INVALID_ERROR) {
+            return;
+        }
+        int index = imaginebook$fitImage;
+        imaginebook$fitImage = -1;
+        float fraction = ImageFit.percent(drawable.getSize().getWidth(), drawable.getSize().getHeight()) / 100f;
+        mutateImage(index, data -> {
+            data.widthFraction = fraction;
+            data.heightFraction = fraction;
+            return data;
+        });
+        if (currentEdited == index) updateFields();
+    }
+
     private void setCurrentEdited(int imageId) {
         currentEdited = imageId;
         if (currentEdited == -1) {
@@ -260,10 +291,13 @@ public abstract class NewBookEditScreenMixin extends Screen implements BookEditS
                 imageData.setUrl(LinkCodes.encode(Imaginebook.fixImgurLink(url)));
                 return imageData;
             }));
+            imaginebook$fitImage = currentEdited;
+            imaginebook$fitPage = currentPage;
         });
 
         addButton = addRenderableWidget(Button.builder(Component.translatable("imaginebook.gui.add"), (b) -> {
-            var newImage = new ImageData("", (short) 0, (short) 0, 1, 1);
+            // Starts at the page's text area instead of the book's top-left edge; fitted once its picture loads.
+            var newImage = new ImageData("", (short) ImageFit.PAGE_X, (short) ImageFit.PAGE_Y, 1, 1);
             addCurrentPageImage(newImage);
             setCurrentEdited(display_pages.get(currentPage).size() - 1);
         }).pos(addButtonX, addButtonY).size(addButtonWidth, elementHeight).build());
@@ -489,26 +523,8 @@ public abstract class NewBookEditScreenMixin extends Screen implements BookEditS
             return;
         var original = new ImageData(getCurrentPageImage(id));
         var modifiedImage = function.apply(original);
-        Pattern pattern = Pattern.compile("\\[.*?\\]");
-
-        Matcher matcher = pattern.matcher(getCurrentPageContent());
-
-        List<ImageData> images = new ArrayList<>();
-        int index = 0;
-
-        var newPage = getCurrentPageContent();
-        while (matcher.find()) {
-            var start = matcher.start();
-            var end = matcher.end();
-
-            if (index == id) {
-                var buf = new StringBuffer(newPage).delete(start, end).insert(start, modifiedImage.bookString());
-                newPage = buf.toString();
-                break;
-            }
-            index++;
-        }
-        setCurrentPageContent(newPage);
+        // Count image tags only, exactly as the picture list does; counting every [..] rewrote "[1]" instead (1.3.1.0).
+        setCurrentPageContent(ImageTags.replace(getCurrentPageContent(), id, modifiedImage.bookString()));
         updateDisplayImages();
     }
 
@@ -649,6 +665,7 @@ public abstract class NewBookEditScreenMixin extends Screen implements BookEditS
         }
         updateDisplayImages();
         if (currentPage < 0 || currentPage >= display_pages.size()) return;
+        imaginebook$fitLoaded();
         boolean editing = getCurrentEdited() != null;
         // The widgets exist only after imaginebook$afterInit(); never assume they do (Stendhal crash).
         if (removeButton != null) {

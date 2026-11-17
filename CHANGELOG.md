@@ -2,6 +2,12 @@
 
 ImagineBook Continued is a fork of [ImagineBook](https://github.com/JumperOnJava/ImagineBook) by JavaJumper and Riflusso, built on the Minecraft 26.x port by [Bratik17078](https://github.com/Bratik17078/ImagineBook). Newest version first; every heading is the content of `VERSION` at release.
 
+## 1.3.1.1
+
+- Fixed: text in square brackets on a page, such as `[1]`, broke pictures. A picture after it on the same line did not show, and moving or editing a picture could rewrite that text instead of the picture's tag. Only real image tags count now, and a tag never runs across lines.
+- A new picture starts on the page's text area and, once it has loaded, shrinks to fit it. 100 % is the picture's own pixel size, so a photo used to cover the whole book. Pictures already in books keep their size.
+- Fixed: the log called the download size limit 1 MB; it is 8 MB.
+
 ## 1.3.1.0
 
 - Books no longer contain web addresses, so servers that filter links accept them. A pasted Imgur link is stored as `imgur:<id>`, any other link as `u:` and its address in base64url; the game still downloads from the real address. The link field keeps showing the real link.

@@ -103,7 +103,7 @@ public class AsyncImageDownloader {
                     totalBytesRead += bytesRead;
                     if (totalBytesRead > maxSize) {
                         overLimitImages.add(downloadURI);
-                        throw new InvalidFormatException("File size exceeds 1MB limit.");
+                        throw new InvalidFormatException("File size exceeds the " + maxSize / 1024 / 1024 + " MB limit.");
                     }
                     convertReader.write(buffer, 0, bytesRead);
                 }

@@ -18,7 +18,7 @@ ImagineBook Continued is a maintained fork of [ImagineBook](https://modrinth.com
 ## How to use
 
 1. Take a book and quill and open it.
-2. Press **Add image** and paste a direct link to a picture, for example `https://i.imgur.com/<id>.png`.
+2. Press **Add image** and paste a direct link to a picture, for example `https://i.imgur.com/<id>.png`. The picture appears on the page, shrunk to fit it.
 3. Click the picture on the page to select it. Drag it, or use the fields and buttons beside the book. **Remove image** deletes it.
 4. Sign the book as usual if you want to share it.
 

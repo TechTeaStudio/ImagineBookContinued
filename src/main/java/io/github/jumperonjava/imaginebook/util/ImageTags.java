@@ -16,8 +16,12 @@ import java.util.regex.Pattern;
  * the reader hides it, the editor fades it.
  */
 public final class ImageTags {
-    /** A tag: a link without commas, then two to five numbers. Shared with ImageSerializer. */
-    public static final Pattern PATTERN = Pattern.compile("\\[[^,]*?(,[+-]?\\d+(\\.\\d+)?){2,5}\\]");
+    /**
+     * A tag: a link, then two to five numbers. Shared with ImageSerializer. The link may not contain
+     * commas, brackets or whitespace: up to 1.3.1.0 (and in the original mod) it could, so "[1] and
+     * [https://...,1,2]" was read as one tag whose link began at "1]", and a tag could run across lines.
+     */
+    public static final Pattern PATTERN = Pattern.compile("\\[[^,\\[\\]\\s]*?(,[+-]?\\d+(\\.\\d+)?){2,5}\\]");
     /** Alpha of tag text in the editor: about 15 %, faint over a picture but still findable with the cursor. */
     private static final int FADED_ALPHA = 0x26;
     private static final char SECTION = '§';
@@ -35,6 +39,18 @@ public final class ImageTags {
             spans.add(new Span(matcher.start(), matcher.end()));
         }
         return spans;
+    }
+
+    /**
+     * {@code page} with its {@code index}-th image tag replaced (an empty replacement removes it); the
+     * page unchanged when there is no such tag. Only image tags count, as in the list of pictures:
+     * other bracketed text such as "[1]" must never be taken for one.
+     */
+    public static String replace(String page, int index, String replacement) {
+        List<Span> tags = find(page);
+        if (index < 0 || index >= tags.size()) return page;
+        Span tag = tags.get(index);
+        return page.substring(0, tag.start()) + replacement + page.substring(tag.end());
     }
 
     public static String strip(String text) {

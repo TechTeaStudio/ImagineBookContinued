@@ -7,6 +7,7 @@ aliases: [Link codes, imgur codes, Coded links]
 summary: "Books keep visible image tags, but the link part is a code with no web address in it: imgur:<id> for Imgur pictures, u:<base64url> for any other link. Storing the picture itself in the book was rejected (a book holds about 75 KB, a picture is 100 to 500 KB). Versions before 1.3.1.0 cannot read codes."
 related:
   - "[[v1.3.1.0 Link codes instead of web addresses]]"
+  - "[[v1.3.1.1 Bracket text and fitted pictures]]"
   - "[[Module Layout]]"
   - "[[Fade tags in the editor, hide them in the reader]]"
 created: 2026-11-17
@@ -17,7 +18,7 @@ updated: 2026-11-17
 
 ## Status
 
-Accepted in v1.3.1.0. In force. Not yet verified in game.
+Accepted in v1.3.1.0. In force. 1.3.1.0 was never released; the codes first ship with 1.3.1.1 ([[v1.3.1.1 Bracket text and fitted pictures]]). Not yet verified in game.
 
 ## Context
 
@@ -60,7 +61,8 @@ Keep visible tags; store the link as a code, never as a web address.
 ### Positive
 
 - Book text holds no scheme, no dot and no comma from a link (`LinkCodesTest.codesDoNotLookLikeLinks`), so a filter that looks for web addresses has nothing to match.
-- The tag format and its regex (`util/ImageTags.PATTERN`) are unchanged: base64url uses letters, digits, `-` and `_`, never a comma. The faded and hidden display of 1.3.0.3 works on codes as it did on links.
+- The tag format is unchanged and codes fit the tag regex (`util/ImageTags.PATTERN`): base64url uses letters, digits, `-` and `_`, never a comma, bracket or whitespace. The faded and hidden display of 1.3.0.3 works on codes as it did on links.
+- 1.3.1.1 narrowed the regex's link part from "anything but a comma" to "no comma, bracket or whitespace", `\[[^,\[\]\s]*?(,[+-]?\d+(\.\d+)?){2,5}\]`, because bracketed text such as `[1]` before a tag was read as part of it and the picture never showed. Codes and real links parse as before ([[Module Layout#Tag pattern]]).
 - Books with plain links keep working; the reader still reads the pre-2025 binary format.
 - An Imgur code is shorter than the link it replaces.
 - Pinned by `LinkCodesTest` (9 tests): Imgur forms, round trip of other links (a comma and Cyrillic included), idempotence, broken codes, codes that decode to non-web links, tag parsing, and the editor and resolver map wiring.
@@ -75,7 +77,7 @@ Keep visible tags; store the link as a code, never as a web address.
 
 ## References
 
-- Version: 1.3.1.0, `CHANGELOG.md` ("Books no longer contain web addresses")
+- Version: 1.3.1.0, `CHANGELOG.md` ("Books no longer contain web addresses"); first released with 1.3.1.1, which also narrowed the tag regex
 - History: commit `28ba12b` "text images" (2025-01-17), the switch from the hidden binary format to visible tags
 - Repository files: `src/main/java/io/github/jumperonjava/imaginebook/util/LinkCodes.java`, `resolvers/CodedLinkResolver.java`, `Imaginebook.java`, `mixin/NewBookEditScreenMixin.java`, `ImageSerializer.java`, `src/test/java/io/github/jumperonjava/imaginebook/util/LinkCodesTest.java`
-- Related notes: [[v1.3.1.0 Link codes instead of web addresses]], [[Module Layout]], [[Fade tags in the editor, hide them in the reader]]
+- Related notes: [[v1.3.1.0 Link codes instead of web addresses]], [[v1.3.1.1 Bracket text and fitted pictures]], [[Module Layout]], [[Fade tags in the editor, hide them in the reader]]
