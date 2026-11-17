@@ -7,7 +7,7 @@ CI builds with Gradle (build.gradle); both read VERSION, which VersionDriftTest 
 
 Usage (from the repository root):
     python tools/build_local.py            # jar + sources jar into build/libs
-    python tools/build_local.py --test     # also compile and run the JUnit tests
+    python tools/build_local.py --test     # also run the JUnit tests and the release script tests
 Environment:
     MULTIMC_ROOT      MultiMC folder (default D:/UslessTrash/MultiMC)
     IMAGINEBOOK_JAVA  java.exe of a Java 25 runtime (a JRE is enough for ECJ)
@@ -165,6 +165,9 @@ def run_tests(java, cp, classes):
            "--scan-class-path", str(test_classes), "--disable-banner", "--details=tree"]
     if subprocess.run(cmd, cwd=ROOT).returncode != 0:
         sys.exit("tests failed")
+    # The release scripts' tests, as CI runs them.
+    if subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", "tools", "-p", "test_*.py"], cwd=ROOT).returncode != 0:
+        sys.exit("release script tests failed")
 
 
 def main():

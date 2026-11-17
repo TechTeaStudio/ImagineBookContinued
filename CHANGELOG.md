@@ -2,6 +2,11 @@
 
 ImagineBook Continued is a fork of [ImagineBook](https://github.com/JumperOnJava/ImagineBook) by JavaJumper and Riflusso, built on the Minecraft 26.x port by [Bratik17078](https://github.com/Bratik17078/ImagineBook). Newest version first; every heading is the content of `VERSION` at release.
 
+## 1.3.0.1
+
+- The mod itself is unchanged from 1.3.0.0.
+- Releases are now published to Modrinth automatically from a version tag, each with its sources jar.
+
 ## 1.3.0.0
 
 First release of the fork, for Minecraft 26.3 on Fabric.

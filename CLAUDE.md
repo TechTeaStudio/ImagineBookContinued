@@ -59,6 +59,12 @@ python tools/mixin_smoke.py
 
 ## Release flow
 
-`product` is the release branch; day-to-day work happens on `main`. `.github/workflows/build.yml` runs on push and pull request to `product` and on `v*` tags (tags also create a GitHub Release with both jars). `CiWorkflowTest` holds the workflow and the build scripts to each other.
+`product` is the release branch; day-to-day work happens on `main`. `.github/workflows/build.yml` runs on push and pull request to `product` and on `v*` tags. `CiWorkflowTest` holds the workflow and the build scripts to each other.
 
-Modrinth (project slug `imaginebook-continued`): upload `imaginebook-continued-fabric-<VERSION>+26.3.jar` as the primary file and the `-sources.jar` as an additional file; loader Fabric, game version 26.3, client required, server unsupported; dependencies Fabric API (required), Stendhal (optional).
+A release is a `v<VERSION>` tag on `product` (`git tag v1.3.0.1 product`, then push the tag, only when the owner asks). CI then runs `tools/publish_modrinth.py`, which uploads the jar and its sources jar to Modrinth (project slug `imaginebook-continued`, Fabric, 26.3, client only, Fabric API required, Stendhal optional) with the `CHANGELOG.md` section as the changelog, and creates a GitHub Release.
+
+- Publishing is tag-only on purpose: every Modrinth version notifies followers, so a CI or docs bump must not publish.
+- The script refuses a tag that does not match `VERSION`, an empty changelog section or a missing sources jar, and skips a version already on Modrinth, so re-running the job is safe.
+- Dependency IDs are hard-coded in the script (`P7dR8mSH` Fabric API, `BWloQ9jK` Stendhal) because the version API takes IDs, not slugs.
+- The token is the repository secret `MODRINTH_TOKEN` (scopes Create versions, Read projects, Read versions). Never print it, never ask the owner to paste it into the chat.
+- `python tools/publish_modrinth.py --dry-run` prints what would be sent, without network or token.

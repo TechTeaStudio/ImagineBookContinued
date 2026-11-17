@@ -1,8 +1,10 @@
 # Builds ImagineBook Continued, runs its tests and checks that every Mixin applies.
 #
 # Triggers: push and pull_request to `product` (the studio release branch) and `v*` tags.
-# A `v*` tag also creates a GitHub Release with the mod jar and its sources jar: the mod is
-# LGPL-3.0-only, so the sources travel with every published binary.
+# A `v*` tag is a release: it publishes the version to Modrinth and creates a GitHub Release, each
+# with the mod jar and its sources jar (the mod is LGPL-3.0-only and the repository is private).
+# Releases need a tag on purpose: every Modrinth version notifies the mod's followers, so a push
+# that changes only CI or docs must not publish one.
 #
 # One job on one runner on purpose: the repository is private and Actions minutes are counted.
 # CiWorkflowTest pins this file against the house rules.
@@ -39,6 +41,9 @@ jobs:
       - name: Build and test
         run: bash ./gradlew build
 
+      - name: Test the release scripts
+        run: python3 -m unittest discover -s tools -p "test_*.py"
+
       # Loads the patched Minecraft classes in preLaunch, before a window exists, and fails on any
       # Mixin that did not apply. Asset download is skipped because no frame is ever drawn.
       - name: Check that every Mixin applies
@@ -51,6 +56,15 @@ jobs:
           path: build/libs/imaginebook-continued-fabric-*.jar
           if-no-files-found: error
           retention-days: 30
+
+      # tools/publish_modrinth.py checks that the tag names VERSION, takes the changelog from
+      # CHANGELOG.md and skips a version that is already up, so a re-run is safe.
+      - name: Publish to Modrinth (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          MODRINTH_PROJECT: imaginebook-continued
+        run: python3 tools/publish_modrinth.py --tag "${GITHUB_REF_NAME}"
 
       - name: Create GitHub Release (tags only)
         if: startsWith(github.ref, 'refs/tags/v')

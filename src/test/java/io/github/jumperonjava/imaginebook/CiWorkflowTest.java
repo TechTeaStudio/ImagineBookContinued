@@ -49,6 +49,28 @@ class CiWorkflowTest {
     }
 
     @Test
+    void modrinthReleaseRunsOnlyOnTagsAfterTheChecks() throws IOException {
+        String workflow = read(".github/workflows/build.yml");
+        int publish = workflow.indexOf("name: Publish to Modrinth");
+        assertTrue(publish > 0, "the workflow publishes to Modrinth");
+        String step = workflow.substring(publish, workflow.indexOf("- name:", publish));
+        assertTrue(step.contains("if: startsWith(github.ref, 'refs/tags/v')"), "a push to product must not publish a version");
+        assertTrue(step.contains("MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}"), "the token comes from a secret");
+        assertTrue(step.contains("python3 tools/publish_modrinth.py --tag \"${GITHUB_REF_NAME}\""));
+        assertTrue(publish > workflow.indexOf("./gradlew runMixinSmoke"), "publish only after the build, tests and Mixin check");
+        assertTrue(workflow.contains("python3 -m unittest discover -s tools"), "the release script is tested in CI");
+    }
+
+    @Test
+    void modrinthSlugMatchesTheModHomepage() throws IOException {
+        String workflow = read(".github/workflows/build.yml");
+        String mod = read("src/main/resources/fabric.mod.json");
+        assertTrue(workflow.contains("MODRINTH_PROJECT: imaginebook-continued"));
+        assertTrue(mod.contains("https://modrinth.com/mod/imaginebook-continued"));
+        assertTrue(read("tools/publish_modrinth.py").contains("\"imaginebook-continued\")"), "script default matches");
+    }
+
+    @Test
     void sourcesJarIsPublishedNextToTheMod() throws IOException {
         String workflow = read(".github/workflows/build.yml");
         assertTrue(read("build.gradle").contains("withSourcesJar()"));

@@ -37,7 +37,14 @@ The second command checks, without opening a game window, that every Mixin appli
 
 ## Releases
 
-The release branch is `product`. A push or pull request to it builds the mod and runs the checks; a `v*` tag also creates a GitHub Release. Every published jar ships with its sources jar.
+The release branch is `product`. A push or pull request to it builds the mod and runs the checks. A `v*` tag that names `VERSION` (for example `v1.3.0.1`) is a release: CI publishes the version to [Modrinth](https://modrinth.com/mod/imaginebook-continued) with its `CHANGELOG.md` section and creates a GitHub Release. Every published jar ships with its sources jar.
+
+```bash
+git tag v1.3.0.1 product
+git push origin v1.3.0.1
+```
+
+The Modrinth upload needs a repository secret `MODRINTH_TOKEN`: a Modrinth personal access token with the scopes Create versions, Read projects and Read versions.
 
 ## Licence and credits
 

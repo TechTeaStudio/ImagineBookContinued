@@ -80,13 +80,15 @@ Used by CI, and locally when bandwidth allows. Fabric Loom 1.19.3 (`net.fabricmc
 `.github/workflows/build.yml`, one job on `ubuntu-latest` (the repository is private and Actions minutes are counted), 30 minute timeout.
 
 - Triggers: push and pull request to `product`, and `v*` tags.
-- Steps: Temurin Java 25, `gradle/actions/setup-gradle`, `./gradlew build`, `./gradlew runMixinSmoke -x downloadAssets`, upload of `build/libs/imaginebook-continued-fabric-*.jar` (mod jar and sources jar) as the artifact `imaginebook-continued`, kept 30 days.
-- On a `v*` tag: a GitHub Release with both jars and generated release notes.
+- Steps: Temurin Java 25, `gradle/actions/setup-gradle`, `./gradlew build`, `python3 -m unittest discover -s tools -p "test_*.py"` (the release script tests), `./gradlew runMixinSmoke -x downloadAssets`, upload of `build/libs/imaginebook-continued-fabric-*.jar` (mod jar and sources jar) as the artifact `imaginebook-continued`, kept 30 days.
+- On a `v*` tag only: `tools/publish_modrinth.py` publishes both jars to Modrinth, then a GitHub Release with both jars and generated release notes ([[Release to Modrinth]]).
 - `CiWorkflowTest` pins the workflow: `product` only (no `main` or `master`), one workflow file, Java 25 in the workflow, `build.gradle` and `imaginebook.mixins.json`, both Gradle steps present, `withSourcesJar()` and the jar glob, the smoke jar outside `build/libs/`.
 
 ## Unit tests
 
 `BookPasteTest`, `RetryPolicyTest`, `StendhalCompatSourceTest`, `CiWorkflowTest`, `VersionDriftTest` in `src/test/java/`, JUnit 5. They run in both `build_local.py --test` and `./gradlew build`.
+
+The release script has its own Python tests, `tools/test_publish_modrinth.py` (unittest): `python -m unittest discover -s tools -p "test_*.py"`.
 
 ## Verification
 
