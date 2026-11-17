@@ -43,5 +43,7 @@ replay_*.log
 
 local.properties
 
-.architectury-transformer\debug.log
-.architectury-transformer/debug.log
+
+# local Gradle-free build (tools/build_local.py)
+tools/.cache/
+__pycache__/

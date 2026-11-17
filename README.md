@@ -1,22 +1,50 @@
-# ImagineBook
+# ImagineBook Continued
 
-Minecraft 26.2 and 26.3 Fabric/NeoForge builds are in [modern/](modern/README.md).
-Run `modern\gradlew.bat -p modern collectJars` with Java 25 to build all four.
-These builds also support pasting large text selections across book pages.
-<sub>(reads as "image in book")</sub>
+Images in Minecraft books, for Minecraft 26.3 on Fabric, compatible with [Stendhal](https://modrinth.com/mod/stendhal).
 
-This mod allows you to add images to your books. Mod is fully client-side so you can add images even on servers, and other mod users also will see them.
+ImagineBook Continued is Tech Tea Studio's maintained fork of [ImagineBook](https://github.com/JumperOnJava/ImagineBook) by JavaJumper and Riflusso, built on the Minecraft 26.x port by [Bratik17078](https://github.com/Bratik17078/ImagineBook). The mod is client-side: you can add images to books on any server, and every player with the mod sees them.
 
-You can use https://imgur.com/ or some services to upload images
+## What it does
 
-![image](https://github.com/user-attachments/assets/d7501325-14ff-4300-aa4a-5512bf9a3559)
+- Open a book and quill, press **Add image**, paste a link to a PNG, JPEG or WebP picture, then move, resize and rotate it with the controls under the book.
+- The image lives in the page text as a tag, so a signed book keeps it: `[url,x,y,width%,height%,rotation]`. Players without the mod see the tag as plain text.
+- `res:<namespace>:<path>` shows a texture from the game or a resource pack instead of a web picture.
+- Pasting long text into the book fills the next pages within the vanilla page and book limits.
 
-You can add image even if you don't have mod installed using mod's image format: [url,x,y,width%,height%,rotationВ°]
+## What changed in this fork
 
-Some parts of mod use Access Wideners, at some point other dev started to use Accessors. I am lazy to port his code to AW, so use whatever you want
+See [CHANGELOG.md](CHANGELOG.md). In short: no crash with Stendhal, image downloads time out and back off instead of hanging or retrying every frame, one Fabric 26.3 build.
 
-## Credits
+## Build
 
-Riflusso for neoforge port and updating the mod
+Requires Java 25.
 
-[Webp-ImageIO](https://github.com/sejda-pdf/webp-imageio) by Seija PDF
+```bash
+./gradlew build
+```
+
+The jar and its sources jar land in `build/libs/`. Without Gradle (no 500 MB first download), from an installed MultiMC copy of Minecraft 26.3:
+
+```bash
+python tools/build_local.py --test
+```
+
+```bash
+python tools/mixin_smoke.py
+```
+
+The second command checks, without opening a game window, that every Mixin applies with Stendhal installed.
+
+## Releases
+
+The release branch is `product`. A push or pull request to it builds the mod and runs the checks; a `v*` tag also creates a GitHub Release. Every published jar ships with its sources jar.
+
+## Licence and credits
+
+LGPL-3.0-only, see [LICENSE](LICENSE). Same licence as the original mod.
+
+- JavaJumper: original ImagineBook
+- Riflusso: NeoForge port and updates
+- Bratik17078: Minecraft 26.2 and 26.3 port, book paste
+- [webp-imageio](https://github.com/sejda-pdf/webp-imageio) by Sejda: WebP support
+- Tech Tea Studio: this fork

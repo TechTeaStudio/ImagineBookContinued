@@ -1,0 +1,51 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version '1.19.3'
+}
+
+// VERSION is the single source of the mod version (BUILD-02); VersionDriftTest defends it.
+def modVersion = file('VERSION').text.trim()
+def mc = '26.3'
+
+version = "${modVersion}+${mc}"
+group = 'com.techteastudio'
+base.archivesName = 'imaginebook-continued-fabric'
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+    // LGPL-3.0: every published jar ships with its sources jar.
+    withSourcesJar()
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    // Minecraft 26.x is unobfuscated: Loom needs no mappings line.
+    minecraft "com.mojang:minecraft:${mc}"
+    implementation 'net.fabricmc:fabric-loader:0.20.1'
+    runtimeOnly 'net.fabricmc.fabric-api:fabric-api:0.165.0+26.3'
+    implementation 'org.sejda.imageio:webp-imageio:0.1.6'
+    include 'org.sejda.imageio:webp-imageio:0.1.6'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
+}
+
+loom { mods { imaginebook { sourceSet sourceSets.main } } }
+apply from: file('smoke.gradle')
+
+test { useJUnitPlatform() }
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
+    options.encoding = 'UTF-8'
+}
+
+processResources {
+    inputs.properties(version: project.version, minecraft: mc)
+    filesMatching('fabric.mod.json') {
+        expand(version: project.version, minecraft: mc)
+    }
+}
+
+jar { from('LICENSE') }
+sourcesJar { from('LICENSE') }

@@ -4,10 +4,10 @@ import com.ibm.icu.impl.InvalidFormatException;
 import io.github.jumperonjava.imaginebook.Imaginebook;
 import io.github.jumperonjava.imaginebook.image.BookDrawable;
 import io.github.jumperonjava.imaginebook.image.Image;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.io.IOUtils;
 
 import javax.imageio.ImageIO;
@@ -22,20 +22,18 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
-
 /**
  * yay i have rewritten it
  */
 public class AsyncImageDownloader {
-    public static BookDrawable ERROR_IMAGE = new Image(Identifier.of("imaginebook", "textures/not_loaded.png"), new Image.ImageSize(128, 128));
-    public static BookDrawable SIZE_ERROR = new Image(Identifier.of("imaginebook", "textures/size_error.png"), new Image.ImageSize(128, 128));
-    public static BookDrawable DOWNLOADING_IMAGE = new Image(Identifier.of("imaginebook", "textures/downloading.png"), new Image.ImageSize(128, 128));
-    public static BookDrawable URI_INVALID_ERROR = new Image(Identifier.of("imaginebook", "textures/url_invalid.png"), new Image.ImageSize(128, 128));
+    public static BookDrawable ERROR_IMAGE = new Image(Identifier.fromNamespaceAndPath("imaginebook", "textures/not_loaded.png"), new Image.ImageSize(128, 128));
+    public static BookDrawable SIZE_ERROR = new Image(Identifier.fromNamespaceAndPath("imaginebook", "textures/size_error.png"), new Image.ImageSize(128, 128));
+    public static BookDrawable DOWNLOADING_IMAGE = new Image(Identifier.fromNamespaceAndPath("imaginebook", "textures/downloading.png"), new Image.ImageSize(128, 128));
+    public static BookDrawable URI_INVALID_ERROR = new Image(Identifier.fromNamespaceAndPath("imaginebook", "textures/invalid_url.png"), new Image.ImageSize(128, 128));
 
     //here is why it is not URI but string
     //https://www.reddit.com/r/java/comments/qi8yu8/hint_to_myself_and_other_poor_souls_dont_use/
     public Map<String, BookDrawable> downloadedImages = new HashMap<>();
-
 
     public List<URI> inProgressImages = Collections.synchronizedList(new LinkedList<>());
     public List<URI> inProgressRetryImages = Collections.synchronizedList(new LinkedList<>());
@@ -43,8 +41,17 @@ public class AsyncImageDownloader {
     public List<URI> errorImages = Collections.synchronizedList(new LinkedList<>());
     public List<URI> overLimitImages = Collections.synchronizedList(new LinkedList<>());
 
+    // A hanging host used to block every later image forever: openStream() has no timeout.
+    static final int CONNECT_TIMEOUT_MS = 10_000;
+    static final int READ_TIMEOUT_MS = 15_000;
+    static final String USER_AGENT = "ImagineBook-Continued (Minecraft client mod)";
+    private final Map<URI, Integer> failures = new java.util.concurrent.ConcurrentHashMap<>();
+    private final Map<URI, Long> lastFailure = new java.util.concurrent.ConcurrentHashMap<>();
+
     public AsyncImageDownloader() {
-        new Thread(this::downloadThread).start();
+        Thread worker = new Thread(this::downloadThread, "ImagineBook image downloader");
+        worker.setDaemon(true);
+        worker.start();
     }
 
     public Path URIPath(URI URI) {
@@ -52,7 +59,7 @@ public class AsyncImageDownloader {
     }
 
     public Identifier URIIdentifier(URI URI) {
-        return Identifier.of(Imaginebook.MOD_ID, "%s/%d.cache".formatted(URI.getHost().toLowerCase(), URI.getPath().hashCode()));
+        return Identifier.fromNamespaceAndPath(Imaginebook.MOD_ID, "%s/%d.cache".formatted(URI.getHost().toLowerCase(), URI.getPath().hashCode()));
     }
 
     public void downloadThread() {
@@ -65,6 +72,12 @@ public class AsyncImageDownloader {
                 downloadURI = inProgressRetryImages.remove(0);
 
             if (downloadURI == null) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
                 continue;
             }
             var URIFile = URIPath(downloadURI);
@@ -74,7 +87,7 @@ public class AsyncImageDownloader {
                 Imaginebook.LOGGER.error("Failed to create folder for file: " + URIFile);
                 continue;
             }
-            try (InputStream URIIn = downloadURI.toURL().openStream();
+            try (InputStream URIIn = open(downloadURI);
                  OutputStream fileOut = Files.newOutputStream(URIFile, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
 
                 Imaginebook.createImagineBookFolder();
@@ -102,6 +115,9 @@ public class AsyncImageDownloader {
 
                 unregisteredImages.add(downloadURI);
             } catch (Exception e) {
+                failures.merge(downloadURI, 1, Integer::sum);
+                lastFailure.put(downloadURI, System.currentTimeMillis());
+                Imaginebook.LOGGER.warn("Image download failed ({}): {}", downloadURI, e.toString());
                 errorImages.add(downloadURI);
                 try {
                     Files.deleteIfExists(URIFile);
@@ -137,8 +153,10 @@ public class AsyncImageDownloader {
         }
 
         if (errorImages.contains(URI)) {
-            inProgressRetryImages.add(URI);
-            errorImages.remove(URI);
+            if (RetryPolicy.DEFAULT.mayRetry(failures.getOrDefault(URI, 0), lastFailure.getOrDefault(URI, 0L), System.currentTimeMillis())) {
+                inProgressRetryImages.add(URI);
+                errorImages.remove(URI);
+            }
             return ERROR_IMAGE;
         }
 
@@ -153,14 +171,13 @@ public class AsyncImageDownloader {
         if (unregisteredImages.contains(URI)) {
             BookDrawable image = null;
             try {
-                image = registerTexture(new FileInputStream(URIPath(URI).toFile()), URIIdentifier(URI));
+                image = register(new FileInputStream(URIPath(URI).toFile()), URIIdentifier(URI));
                 downloadedImages.put(URI.toString(), image);
                 unregisteredImages.remove(URI);
             } catch (FileNotFoundException e) {
                 errorImages.add(URI);
                 return ERROR_IMAGE;
             }
-
 
             return image;
         }
@@ -170,14 +187,20 @@ public class AsyncImageDownloader {
         return ERROR_IMAGE;
     }
 
-    public static BookDrawable registerTexture(InputStream texture, Identifier identifier) {
+    static InputStream open(URI uri) throws IOException {
+        var connection = uri.toURL().openConnection();
+        connection.setConnectTimeout(CONNECT_TIMEOUT_MS);
+        connection.setReadTimeout(READ_TIMEOUT_MS);
+        connection.setRequestProperty("User-Agent", USER_AGENT);
+        return connection.getInputStream();
+    }
+
+    public static BookDrawable register(InputStream texture, Identifier identifier) {
         NativeImage nativeImage = toNativeImage(texture);
-        //? if < 1.21.5 {
-        var backedTestTexture = new NativeImageBackedTexture(nativeImage);
-        //?} else {
-        /*var backedTestTexture = new NativeImageBackedTexture(identifier::toString, nativeImage);
-        *///?}
-        MinecraftClient.getInstance().getTextureManager().registerTexture(identifier, backedTestTexture);
+
+        var backedTestTexture = new DynamicTexture(identifier::toString, nativeImage);
+
+        Minecraft.getInstance().getTextureManager().register(identifier, backedTestTexture);
         return new Image(identifier, new Image.ImageSize(nativeImage.getWidth(), nativeImage.getHeight()));
     }
 

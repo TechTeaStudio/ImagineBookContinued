@@ -2,7 +2,7 @@ package io.github.jumperonjava.imaginebook.resolvers;
 
 import io.github.jumperonjava.imaginebook.image.BookDrawable;
 import io.github.jumperonjava.imaginebook.image.Image;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import static io.github.jumperonjava.imaginebook.resolvers.AsyncImageDownloader.ERROR_IMAGE;
 

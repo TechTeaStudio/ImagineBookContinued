@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "imaginebook_ingame_test",
+  "version": "1.0.0",
+  "name": "ImagineBook Continued in-game test (development only)",
+  "environment": "client",
+  "entrypoints": { "client": ["com.techteastudio.imaginebook.ingametest.InGameTest"] },
+  "depends": { "minecraft": "26.3", "imaginebook": "*" }
+}

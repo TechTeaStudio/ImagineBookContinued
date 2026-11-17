@@ -1,31 +1,17 @@
 {
   "schemaVersion": 1,
-  "id": "${id}",
+  "id": "imaginebook",
   "version": "${version}",
-  "name": "${name}",
-  "description": "",
-  "authors": [
-    "JavaJumper"
-  ],
-  "contact": {
-    "homepage": "https://modrinth.com/mod/imaginebook",
-    "issues": "https://github.com/jumperonjava/ImagineBook/issues",
-    "sources": "https://github.com/jumperonjava/ImagineBook"
-  },
-  "license": "LGPLv3",
-  "icon": "assets/${id}/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "client": [
-      "io.github.jumperonjava.imaginebook.platform.PlatformEntrypoint"
-    ]
-  },
-  "mixins": [
-    "imaginebook-common.mixins.json",
-    "imaginebook-fabric.mixins.json"
-  ],
-  "depends": {
-    "fabricloader": ">=0.15",
-    "minecraft": "${minecraft}"
-  }
+  "name": "ImagineBook Continued",
+  "description": "Add images to written and writable books. A maintained fork of ImagineBook for Minecraft 26.3, compatible with Stendhal.",
+  "authors": ["JavaJumper", "Riflusso"],
+  "contributors": ["Bratik17078", "Tech Tea Studio"],
+  "contact": { "homepage": "https://modrinth.com/mod/imaginebook-continued" },
+  "license": "LGPL-3.0-only",
+  "icon": "assets/imaginebook/icon.png",
+  "environment": "client",
+  "entrypoints": { "client": ["io.github.jumperonjava.imaginebook.platform.PlatformEntrypoint"] },
+  "mixins": ["imaginebook.mixins.json"],
+  "depends": { "fabricloader": ">=0.20.1", "fabric-api": "*", "minecraft": "${minecraft}", "java": ">=25" },
+  "suggests": { "stendhal": "*" }
 }

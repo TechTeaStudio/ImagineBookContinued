@@ -1,15 +1,12 @@
 package io.github.jumperonjava.imaginebook.image;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.jumperonjava.imaginebook.resolvers.AsyncImageDownloader;
 import io.github.jumperonjava.imaginebook.Imaginebook;
 import io.github.jumperonjava.imaginebook.util.VersionFunctions;
-import net.minecraft.client.gui.DrawContext;
-import org.joml.Quaternionf;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.util.Locale;
 import java.util.Objects;
-
 
 public class ImageData {
     private String url;
@@ -59,7 +56,7 @@ public class ImageData {
         return mouseX >= minX && mouseX < maxX && mouseY >= minY && mouseY < maxY;
     }
 
-    public void renderImage(DrawContext context, int bookX, int bookY) {
+    public void renderImage(GuiGraphicsExtractor context, int bookX, int bookY) {
         var image = getImage();
         var size = image.getSize();
         var w = renderWidth();
@@ -152,7 +149,6 @@ public class ImageData {
                 rotation
         ).replaceAll("\\.00(?!\\d)", "").replaceAll("(\\.\\d)0(?!\\d)", "$1");
     }
-
 
     public void rotate(float degrees) {
         this.rotation += degrees;

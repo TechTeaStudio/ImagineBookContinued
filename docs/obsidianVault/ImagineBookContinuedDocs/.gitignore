@@ -1,0 +1,3 @@
+# Per-machine Obsidian state (open tabs and panes) never reaches git.
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json

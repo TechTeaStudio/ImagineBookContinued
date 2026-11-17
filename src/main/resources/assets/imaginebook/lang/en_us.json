@@ -1,5 +1,5 @@
 {
-  "imaginebook.error.url_too_long": "Url is longer that 255 symbols",
+  "imaginebook.error.url_too_long": "URL is longer than 255 characters",
   "imaginebook.error.too_much_lines": "Text exceeds limit",
   "imaginebook.gui.add": "Add image",
   "imaginebook.gui.remove": "Remove image",

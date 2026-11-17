@@ -1,36 +1,61 @@
-# Automatically build the project and run any configured tests for every push
-# and submitted pull request. This can help catch issues that only occur on
-# certain platforms or Java versions, and provides a first line of defence
-# against bad commits.
+# Builds ImagineBook Continued, runs its tests and checks that every Mixin applies.
+#
+# Triggers: push and pull_request to `product` (the studio release branch) and `v*` tags.
+# A `v*` tag also creates a GitHub Release with the mod jar and its sources jar: the mod is
+# LGPL-3.0-only, so the sources travel with every published binary.
+#
+# One job on one runner on purpose: the repository is private and Actions minutes are counted.
+# CiWorkflowTest pins this file against the house rules.
 
-name: build
-on: [pull_request, push]
+name: Build
+
+on:
+  push:
+    branches: ["product"]
+    tags: ["v*"]
+  pull_request:
+    branches: ["product"]
+
+permissions:
+  contents: write  # softprops/action-gh-release creates the release on tags
 
 jobs:
   build:
-    strategy:
-      matrix:
-        # Use these Java versions
-        java: [21]
-        # and run on both Linux and Windows
-        os: [ubuntu-22.04, windows-2022]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - name: checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-      - name: setup jdk ${{ matrix.java }}
+
+      - name: Set up Java 25
         uses: actions/setup-java@v4
         with:
-          java-version: ${{ matrix.java }}
-          distribution: 'microsoft'
-      - name: make gradle wrapper executable
-        if: ${{ runner.os != 'Windows' }}
-        run: chmod +x ./gradlew
-      - name: build
-        run: ./gradlew chiseledBuild
-      - name: capture build artifacts
-        if: ${{ runner.os == 'Linux' && matrix.java == '21' }} # Only upload artifacts built from latest java on one OS
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and test
+        run: bash ./gradlew build
+
+      # Loads the patched Minecraft classes in preLaunch, before a window exists, and fails on any
+      # Mixin that did not apply. Asset download is skipped because no frame is ever drawn.
+      - name: Check that every Mixin applies
+        run: bash ./gradlew runMixinSmoke -x downloadAssets
+
+      - name: Upload jars
         uses: actions/upload-artifact@v4
         with:
-          name: Artifacts
-          path: build/libs/
+          name: imaginebook-continued
+          path: build/libs/imaginebook-continued-fabric-*.jar
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Create GitHub Release (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/libs/imaginebook-continued-fabric-*.jar
+          fail_on_unmatched_files: true
+          generate_release_notes: true

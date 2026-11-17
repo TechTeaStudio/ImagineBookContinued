@@ -1,16 +1,10 @@
 package io.github.jumperonjava.imaginebook.image;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.jumperonjava.imaginebook.util.VersionFunctions;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.gui.screen.pack.PackScreen;
-import net.minecraft.client.render.entity.model.CowEntityModel;
-import net.minecraft.client.texture.MissingSprite;
-import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.util.Identifier;
-import org.joml.Quaternionf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.resources.Identifier;
 
 public class Image implements BookDrawable {
     private final Identifier identifier;
@@ -31,13 +25,11 @@ public class Image implements BookDrawable {
     }
     public Image(Identifier identifier) {
         this.identifier = identifier;
-        //? if >= 1.21.4 {
-        /*var texture = MinecraftClient.getInstance().getTextureManager().getTexture(identifier);
-        *///?} else {
-        var texture = MinecraftClient.getInstance().getTextureManager().getOrDefault(identifier,MissingSprite.getMissingSpriteTexture());
-        //?}
-        if (texture instanceof NativeImageBackedTexture imageBackedTexture){
-            size = new ImageSize(imageBackedTexture.getImage().getWidth(), imageBackedTexture.getImage().getHeight());
+
+        var texture = Minecraft.getInstance().getTextureManager().getTexture(identifier);
+
+        if (texture instanceof DynamicTexture imageBackedTexture){
+            size = new ImageSize(imageBackedTexture.getPixels().getWidth(), imageBackedTexture.getPixels().getHeight());
         }
         else {
             size = new ImageSize(64,64);
@@ -45,7 +37,7 @@ public class Image implements BookDrawable {
     }
 
     @Override
-    public void render(DrawContext context) {
+    public void render(GuiGraphicsExtractor context) {
         VersionFunctions.drawTexture(context, this.getIdentifier(),
                 0,
                 0,
