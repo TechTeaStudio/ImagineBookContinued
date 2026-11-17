@@ -25,7 +25,7 @@ Meta notes about the vault itself: where things live and the templates new notes
 
 ## Status
 
-- Vault created on 2026-11-17, at version 1.3.0.0 of the mod; notes cover it up to 1.3.1.1.
+- Vault created on 2026-11-17, at version 1.3.0.0 of the mod; notes cover it up to 1.3.2.0.
 - Folders in use: `01 Architecture`, `04 Operations`, `05 Summaries`, `06 Decisions`.
 
 ## All notes

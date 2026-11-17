@@ -2,6 +2,7 @@ package io.github.jumperonjava.imaginebook;
 
 import io.github.jumperonjava.imaginebook.resolvers.AsyncImageDownloader;
 import io.github.jumperonjava.imaginebook.resolvers.CodedLinkResolver;
+import io.github.jumperonjava.imaginebook.util.LinkCodes;
 import io.github.jumperonjava.imaginebook.resolvers.Resolver;
 import io.github.jumperonjava.imaginebook.resolvers.TextureResolver;
 import io.github.jumperonjava.imaginebook.resolvers.UrlResolver;
@@ -31,12 +32,9 @@ public final class Imaginebook {
     public static int LENGTH = 1023;
     public static boolean cancelledFinalize = false;
 
+    /** A single-picture imgur.com page as its direct link; albums and galleries stay pages (see LinkCodes). */
     public static String fixImgurLink(String link) {
-        if (link.startsWith("https://imgur.com/")) {
-            String imageId = link.substring("https://imgur.com/".length());
-            return "https://i.imgur.com/" + imageId + ".png";
-        }
-        return link;
+        return LinkCodes.directImgurLink(link);
     }
 
     public static Path getCachePath(){
@@ -56,6 +54,7 @@ public final class Imaginebook {
             "res", TextureResolver.INSTANCE,
             // Link codes that keep web addresses out of the book text; see util.LinkCodes.
             "imgur", CodedLinkResolver.IMGUR,
+            "clovi", CodedLinkResolver.CLOVI,
             "u", CodedLinkResolver.CODED
     ));
     public static void addResolver(String id, Resolver resolver) {

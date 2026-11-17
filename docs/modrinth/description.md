@@ -6,8 +6,8 @@ ImagineBook Continued is a maintained fork of [ImagineBook](https://modrinth.com
 
 ## Features
 
-- **Pictures from the web:** PNG, JPEG and WebP by direct link. Imgur page links are turned into direct image links for you.
-- **No links in the book:** servers that block web addresses in books accept yours. The book stores a short code instead of the address (`imgur:<id>` for Imgur, an encoded form for other sites), and your game downloads from the real address.
+- **Pictures from the web:** PNG, JPEG and WebP by direct link, Imgur and clovi.ru links, and links to pages that have a preview picture, such as a clovi.ru post.
+- **No links in the book:** servers that block web addresses in books accept yours. The book stores a short code instead of the address (`imgur:<id>` for Imgur, `clovi:<id>` for clovi.ru, an encoded form for other sites), and your game downloads from the real address.
 - **Pictures from the game:** `res:minecraft:textures/item/diamond.png` shows any texture from the game or from your resource packs.
 - **Full placement control:** drag a picture with the mouse, or set X, Y, width, height and rotation in the fields beside the book. Scroll over a field to nudge the value; hold Shift, Ctrl or Alt to move in bigger steps.
 - **Stored in the book itself:** each picture is a short tag in the page text, `[link,x,y,width%,height%,rotation]`. Signed books keep their pictures and hide the tags; while you write, tags are faded so they never cover the picture. You can copy a tag between books.

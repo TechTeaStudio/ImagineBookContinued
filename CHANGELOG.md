@@ -2,6 +2,12 @@
 
 ImagineBook Continued is a fork of [ImagineBook](https://github.com/JumperOnJava/ImagineBook) by JavaJumper and Riflusso, built on the Minecraft 26.x port by [Bratik17078](https://github.com/Bratik17078/ImagineBook). Newest version first; every heading is the content of `VERSION` at release.
 
+## 1.3.2.0
+
+- clovi.ru support. A file link (`clovi.ru/f/<id>`) is stored as `clovi:<id>`, a post link (`clovi.ru/post/<number>`) as `clovi:post/<number>`.
+- Links to a web page instead of a picture now work when the page names a preview picture (`og:image`, else `twitter:image`): the game follows that address once, under the same 8 MB limit and timeouts, and caches the picture under the page's address. This is how clovi posts show.
+- Fixed: an Imgur album or gallery link (`imgur.com/a/...`, `imgur.com/gallery/...`) was rewritten into `i.imgur.com/<rest>.png`, an address that does not exist. Only a single-picture page (`imgur.com/<id>`) becomes a direct link now; albums and galleries stay page links and use the page's preview picture.
+
 ## 1.3.1.1
 
 - Fixed: text in square brackets on a page, such as `[1]`, broke pictures. A picture after it on the same line did not show, and moving or editing a picture could rewrite that text instead of the picture's tag. Only real image tags count now, and a tag never runs across lines.

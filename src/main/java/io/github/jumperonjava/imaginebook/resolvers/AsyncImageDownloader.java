@@ -1,6 +1,5 @@
 package io.github.jumperonjava.imaginebook.resolvers;
 
-import com.ibm.icu.impl.InvalidFormatException;
 import io.github.jumperonjava.imaginebook.Imaginebook;
 import io.github.jumperonjava.imaginebook.image.BookDrawable;
 import io.github.jumperonjava.imaginebook.image.Image;
@@ -92,22 +91,18 @@ public class AsyncImageDownloader {
 
                 Imaginebook.createImagineBookFolder();
 
-                byte[] buffer = new byte[8192];
-                int bytesRead;
-                long totalBytesRead = 0;
-                long maxSize = 8 * 1024 * 1024;
-
-                var convertReader = new ByteArrayOutputStream();
-
-                while ((bytesRead = URIIn.read(buffer)) != -1) {
-                    totalBytesRead += bytesRead;
-                    if (totalBytesRead > maxSize) {
-                        overLimitImages.add(downloadURI);
-                        throw new InvalidFormatException("File size exceeds the " + maxSize / 1024 / 1024 + " MB limit.");
+                byte[] bytes = readLimited(URIIn, downloadURI);
+                // A page instead of a picture (a clovi.ru post, an Imgur page): follow its preview picture,
+                // once, under the same limits. The result is cached under the page's address.
+                if (!PagePreview.looksLikeImage(bytes)) {
+                    var page = PagePreview.find(new String(bytes, java.nio.charset.StandardCharsets.UTF_8), downloadURI);
+                    if (page.isPresent()) {
+                        try (InputStream preview = open(page.get())) {
+                            bytes = readLimited(preview, downloadURI);
+                        }
                     }
-                    convertReader.write(buffer, 0, bytesRead);
                 }
-                var convertWriter = new ByteArrayInputStream(convertReader.toByteArray());
+                var convertWriter = new ByteArrayInputStream(bytes);
 
                 var converted = convertToPng(convertWriter);
 
@@ -127,6 +122,25 @@ public class AsyncImageDownloader {
                 }
             }
         }
+    }
+
+    /** Largest download accepted, picture or page. */
+    private static final long MAX_SIZE = 8 * 1024 * 1024;
+
+    private byte[] readLimited(InputStream in, URI downloadURI) throws IOException {
+        var out = new ByteArrayOutputStream();
+        byte[] buffer = new byte[8192];
+        long total = 0;
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            total += read;
+            if (total > MAX_SIZE) {
+                overLimitImages.add(downloadURI);
+                throw new IOException("File size exceeds the " + MAX_SIZE / 1024 / 1024 + " MB limit.");
+            }
+            out.write(buffer, 0, read);
+        }
+        return out.toByteArray();
     }
 
     public BookDrawable requestTexture(String URIStr) {

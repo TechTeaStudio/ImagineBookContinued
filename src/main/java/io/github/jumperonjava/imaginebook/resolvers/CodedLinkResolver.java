@@ -3,9 +3,10 @@ package io.github.jumperonjava.imaginebook.resolvers;
 import io.github.jumperonjava.imaginebook.image.BookDrawable;
 import io.github.jumperonjava.imaginebook.util.LinkCodes;
 
-/** Resolves {@code imgur:} and {@code u:} link codes (see {@link LinkCodes}) by downloading the real address. */
+/** Resolves {@code imgur:}, {@code clovi:} and {@code u:} link codes (see {@link LinkCodes}) by downloading the real address. */
 public class CodedLinkResolver implements Resolver {
     public static final CodedLinkResolver IMGUR = new CodedLinkResolver(LinkCodes.IMGUR);
+    public static final CodedLinkResolver CLOVI = new CodedLinkResolver(LinkCodes.CLOVI);
     public static final CodedLinkResolver CODED = new CodedLinkResolver(LinkCodes.CODED);
 
     private final String prefix;

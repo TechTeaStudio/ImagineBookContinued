@@ -12,6 +12,7 @@ related:
   - "[[Release to Modrinth]]"
   - "[[v1.3.0.0 First release of the fork]]"
   - "[[Store link codes, not pictures, in book text]]"
+  - "[[Follow a page's preview picture once]]"
 created: 2026-11-17
 updated: 2026-11-17
 ---
@@ -24,10 +25,10 @@ Where things live in the ImagineBook Continued vault. Skim this before creating 
 
 - **Name:** ImagineBook Continued, mod id `imaginebook`, a maintained fork by Tech Tea Studio.
 - **Lineage:** ImagineBook by JavaJumper and Riflusso (https://github.com/JumperOnJava/ImagineBook), through the Minecraft 26.x port by Bratik17078 (https://github.com/Bratik17078/ImagineBook). `fabric.mod.json` lists JavaJumper and Riflusso as authors, Bratik17078 and Tech Tea Studio as contributors.
-- **What it does:** adds images to book and quill and written books. An image is a text tag on the page, `[link,x,y,width%,height%,rotation]`. Since 1.3.1.0 the editor stores a web link as a code, `imgur:<id>` or `u:<base64url>`, so the book holds no web address; plain `http:` and `https:` links in older books still work, and `res:` takes a resource id. The mod is client-side only; other players who have it (1.3.1.0 or later, for codes) see the images, players without it see the tag text.
+- **What it does:** adds images to book and quill and written books. An image is a text tag on the page, `[link,x,y,width%,height%,rotation]`. Since 1.3.1.0 the editor stores a web link as a code, `imgur:<id>` or `u:<base64url>`, and since 1.3.2.0 `clovi:<file id>` or `clovi:post/<number>`, so the book holds no web address; plain `http:` and `https:` links in older books still work, and `res:` takes a resource id. Since 1.3.2.0 a link to a web page shows the page's preview picture. The mod is client-side only; other players who have it (1.3.1.0 or later for codes, 1.3.2.0 or later for clovi codes) see the images, players without it see the tag text.
 - **Target:** Minecraft 26.3 (unobfuscated, Mojang names at runtime), Fabric Loader 0.20.1, Fabric API, Java 25. Stendhal is an optional companion mod.
 - **Licence:** LGPL-3.0-only (`LICENSE`).
-- **Version:** single source is the `VERSION` file (1.3.1.1 now, 1.3.0.0 when this vault was created), odometer style, one digit per part. `VersionDriftTest` holds `build.gradle`, `fabric.mod.json`, `tools/build_local.py` and the newest `CHANGELOG.md` heading to it.
+- **Version:** single source is the `VERSION` file (1.3.2.0 now, 1.3.0.0 when this vault was created), odometer style, one digit per part. `VersionDriftTest` holds `build.gradle`, `fabric.mod.json`, `tools/build_local.py` and the newest `CHANGELOG.md` heading to it.
 - **Branches:** day-to-day work on `main`, releases on `product`.
 - **Distribution:** Modrinth, slug `imaginebook-continued`.
 
@@ -37,6 +38,7 @@ Where things live in the ImagineBook Continued vault. Skim this before creating 
 |---|---|
 | Which class does what | [[Module Layout]] |
 | How an image is stored in the book, the tag pattern, link codes | [[Module Layout#Tag pattern]], [[Module Layout#Wire format of the link part]], [[Store link codes, not pictures, in book text]] |
+| Why a link to a web page shows a picture | [[Follow a page's preview picture once]] |
 | Why the editor widgets are added from `Screen`, the Stendhal crash | [[Stendhal Compatibility]] |
 | Building, testing and the Mixin check, locally and in CI | [[Build and Test]] |
 | Shipping a version | [[Release to Modrinth]] |

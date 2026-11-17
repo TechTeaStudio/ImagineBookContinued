@@ -17,7 +17,42 @@ class LinkCodesTest {
             "https://i.imgur.com/MK3eW3A.jpg",
             "https://cdn.example.org/pics/castle.png?size=large&v=2",
             "http://example.com/a,b.png",
-            "https://пример.рф/картинка.png");
+            "https://пример.рф/картинка.png",
+            "https://clovi.ru/f/YwUDL2J",
+            "https://clovi.ru/post/12207");
+
+    @Test
+    void cloviLinksBecomeShortCodes() {
+        assertEquals("clovi:YwUDL2J", LinkCodes.encode("https://clovi.ru/f/YwUDL2J"));
+        assertEquals("clovi:post/12207", LinkCodes.encode("https://clovi.ru/post/12207"));
+        assertEquals("clovi:post/12207", LinkCodes.encode("http://www.clovi.ru/post/12207/"));
+    }
+
+    @Test
+    void imgurAlbumsAndGalleriesStayPages() {
+        // fixImgurLink used to turn every imgur.com/<rest> into i.imgur.com/<rest>.png, a dead address for albums.
+        assertEquals("https://i.imgur.com/MK3eW3A.png", LinkCodes.directImgurLink("https://imgur.com/MK3eW3A"));
+        for (String page : List.of("https://imgur.com/a/AbCdE12", "https://imgur.com/gallery/some-title-AbCdE12")) {
+            assertEquals(page, LinkCodes.directImgurLink(page));
+            String code = LinkCodes.encode(LinkCodes.directImgurLink(page));
+            assertTrue(code.startsWith("u:"), code);
+            assertEquals(page, LinkCodes.decode(code), "the page link survives, so its preview picture is used");
+        }
+        assertEquals("https://example.org/x.png", LinkCodes.directImgurLink("https://example.org/x.png"));
+    }
+
+    @Test
+    void editorFixesImgurLinksThroughLinkCodes() throws IOException {
+        String mod = Files.readString(Path.of("src/main/java/io/github/jumperonjava/imaginebook/Imaginebook.java"));
+        assertTrue(mod.contains("return LinkCodes.directImgurLink(link);"));
+    }
+
+    @Test
+    void cloviCodesOpenTheirAddresses() {
+        assertEquals("https://clovi.ru/f/YwUDL2J", LinkCodes.decode("clovi:YwUDL2J"));
+        assertEquals("https://clovi.ru/post/12207", LinkCodes.decode("clovi:post/12207"));
+        assertEquals("clovi:../x", LinkCodes.decode("clovi:../x"), "anything else is not a clovi address");
+    }
 
     @Test
     void imgurLinksBecomeShortCodes() {
@@ -34,7 +69,7 @@ class LinkCodesTest {
 
     @Test
     void otherLinksAreEncodedAndComeBackExactly() {
-        for (String link : LINKS.subList(1, LINKS.size())) {
+        for (String link : LINKS.subList(1, 4)) {
             String code = LinkCodes.encode(link);
             assertTrue(code.startsWith("u:"), code);
             assertEquals(link, LinkCodes.decode(code));
@@ -94,5 +129,6 @@ class LinkCodesTest {
         String mod = Files.readString(Path.of("src/main/java/io/github/jumperonjava/imaginebook/Imaginebook.java"));
         assertTrue(mod.contains("\"imgur\", CodedLinkResolver.IMGUR"));
         assertTrue(mod.contains("\"u\", CodedLinkResolver.CODED"));
+        assertTrue(mod.contains("\"clovi\", CodedLinkResolver.CLOVI"));
     }
 }

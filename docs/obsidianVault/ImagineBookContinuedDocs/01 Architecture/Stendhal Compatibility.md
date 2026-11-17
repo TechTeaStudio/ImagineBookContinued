@@ -101,7 +101,7 @@ ImagineBook's image controls (URL field, Add, Remove, position, size and rotatio
 ### What pins it
 
 - `ControlPanelLayoutTest` (`src/test/java/.../util/ControlPanelLayoutTest.java`) models Stendhal 1.4.9's screen at 929 x 590: the panel goes left, below Stendhal's column and above the band, and no slot overlaps a widget. It also checks the vanilla top left corner, that slots stay inside the panel and do not overlap, the bottom rows fallback at 400 x 240, and that a side under the minimum width is not used.
-- `tools/mixin_smoke.py` with Stendhal passed for 1.3.0.3, 1.3.1.0 and 1.3.1.1; for 1.3.1.1 Stendhal 1.4.9 was loaded from a temporary copy, because the owner keeps it disabled now. No in-game check of the layout is recorded yet.
+- `tools/mixin_smoke.py` with Stendhal passed for 1.3.0.3, 1.3.1.0, 1.3.1.1 and 1.3.2.0; for 1.3.1.1 and 1.3.2.0 Stendhal 1.4.9 was loaded from a temporary copy, because the owner keeps it disabled now. No in-game check of the layout is recorded yet.
 
 ### Related: faded tags
 

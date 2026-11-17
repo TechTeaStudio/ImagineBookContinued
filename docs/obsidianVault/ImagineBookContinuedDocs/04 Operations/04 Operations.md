@@ -34,7 +34,7 @@ How the mod is built, checked and shipped to players.
 
 ## Status
 
-- Two runbooks, matching version 1.3.1.1.
+- Two runbooks, matching version 1.3.2.0 (71 JUnit and 13 Python tests).
 - There is no version bump script yet; `VERSION` and `CHANGELOG.md` are edited by hand and `VersionDriftTest` checks them.
 
 ## All notes
