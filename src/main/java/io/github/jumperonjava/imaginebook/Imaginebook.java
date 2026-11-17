@@ -1,6 +1,7 @@
 package io.github.jumperonjava.imaginebook;
 
 import io.github.jumperonjava.imaginebook.resolvers.AsyncImageDownloader;
+import io.github.jumperonjava.imaginebook.resolvers.CodedLinkResolver;
 import io.github.jumperonjava.imaginebook.resolvers.Resolver;
 import io.github.jumperonjava.imaginebook.resolvers.TextureResolver;
 import io.github.jumperonjava.imaginebook.resolvers.UrlResolver;
@@ -52,7 +53,10 @@ public final class Imaginebook {
     private static Map<String,Resolver> resolvers = new HashMap<>(Map.of(
             "http",UrlResolver.INSTANCE,
             "https",UrlResolver.INSTANCE_S,
-            "res", TextureResolver.INSTANCE
+            "res", TextureResolver.INSTANCE,
+            // Link codes that keep web addresses out of the book text; see util.LinkCodes.
+            "imgur", CodedLinkResolver.IMGUR,
+            "u", CodedLinkResolver.CODED
     ));
     public static void addResolver(String id, Resolver resolver) {
         resolvers.put(id, resolver);

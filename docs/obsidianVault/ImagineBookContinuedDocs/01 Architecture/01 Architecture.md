@@ -22,19 +22,21 @@ How the mod is put together, and why its editor hooks sit where they do.
 
 ## Key documents
 
-- [[Module Layout]]: every package and class under `io.github.jumperonjava.imaginebook`, the eight Mixins and their targets, MixinExtras
+- [[Module Layout]]: every package and class under `io.github.jumperonjava.imaginebook`, the tag wire format and link codes, the resolver map, the eight Mixins and their targets, MixinExtras
 - [[Stendhal Compatibility]]: the `removeButton` crash, the `Screen.init` hook, null tolerance, the control panel that keeps clear of Stendhal's toolbar, and the checks that pin them
 
 ## Active decisions
 
 - [[Hook Screen.init instead of BookEditScreen.init]]
 - [[Fade tags in the editor, hide them in the reader]]
+- [[Store link codes, not pictures, in book text]]
 - [[Single Fabric 26.3 target]]
 
 ## Status
 
-- Two notes, both active, matching version 1.3.0.3.
-- Open question: the faded tags and the side panel of 1.3.0.3 are not yet verified in game (see [[v1.3.0.3 Tags faded, controls beside the book]]).
+- Two notes, both active, matching version 1.3.1.0.
+- Open question: the link codes of 1.3.1.0 are not yet checked in game (see [[v1.3.1.0 Link codes instead of web addresses]]).
+- Open question: no in-game check of the faded tags and the side panel of 1.3.0.3 is recorded here, though 1.3.0.3 was tagged on 2026-11-17 (see [[v1.3.0.3 Tags faded, controls beside the book]]).
 - Open question: CI's Mixin smoke runs without Stendhal; only the local `tools/mixin_smoke.py` loads it (see [[Stendhal Compatibility]]).
 
 ## All notes

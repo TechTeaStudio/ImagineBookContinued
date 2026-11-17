@@ -2,6 +2,13 @@
 
 ImagineBook Continued is a fork of [ImagineBook](https://github.com/JumperOnJava/ImagineBook) by JavaJumper and Riflusso, built on the Minecraft 26.x port by [Bratik17078](https://github.com/Bratik17078/ImagineBook). Newest version first; every heading is the content of `VERSION` at release.
 
+## 1.3.1.0
+
+- Books no longer contain web addresses, so servers that filter links accept them. A pasted Imgur link is stored as `imgur:<id>`, any other link as `u:` and its address in base64url; the game still downloads from the real address. The link field keeps showing the real link.
+- Books with plain `https://` links keep working.
+- ImagineBook versions before 1.3.1.0 (the original mod and other 26.x ports included) cannot read the new codes and show the error picture for them.
+- Fixed: a link over 255 characters showed the raw key `imaginebook.error.too_long` instead of the message.
+
 ## 1.3.0.3
 
 - Image tags no longer cover the picture: a signed book hides them, and the book and quill fades them to a faint trace you can still find with the cursor.

@@ -23,13 +23,14 @@ One decision per note. A replaced decision stays: it gets `status: deprecated`, 
 
 - [[Hook Screen.init instead of BookEditScreen.init]]: editor widgets added after `Screen` calls `init()`, because Stendhal cancels `BookEditScreen.init()`
 - [[Fade tags in the editor, hide them in the reader]]: tags stay in the page text; the reader strips them from the page it shows, the editor draws them at about 15 % alpha
+- [[Store link codes, not pictures, in book text]]: the tag's link part is `imgur:<id>` or `u:<base64url>`, never a web address, so servers that filter links accept the book; storing the picture itself does not fit in a book
 - [[Single Fabric 26.3 target]]: one build, Fabric for Minecraft 26.3; other targets dropped, kept in git history
 - [[Private repository, sources jar on every upload]]: LGPL-3.0 compliance while the repository is private
 - [[Publish to Modrinth from version tags with an in-repo script]]: CI publishes only from a `v<VERSION>` tag, with the standard-library `tools/publish_modrinth.py` instead of a third-party action or Gradle plugin
 
 ## Status
 
-- Five decisions, all accepted and in force at version 1.3.0.3.
+- Six decisions, all accepted and in force at version 1.3.1.0.
 - Nothing superseded yet. Revisit the sources jar decision if the repository goes public.
 
 ## Decisions in force

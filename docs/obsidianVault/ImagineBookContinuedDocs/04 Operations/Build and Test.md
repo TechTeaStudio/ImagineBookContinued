@@ -89,9 +89,9 @@ Used by CI, and locally when bandwidth allows. Fabric Loom 1.19.3 (`net.fabricmc
 
 ## Unit tests
 
-`BookPasteTest`, `RetryPolicyTest`, `ImageTagsTest`, `ControlPanelLayoutTest`, `StendhalCompatSourceTest`, `CiWorkflowTest`, `VersionDriftTest` in `src/test/java/`, JUnit 5; 39 tests at 1.3.0.3. They run in both `build_local.py --test` and `./gradlew build`.
+`BookPasteTest`, `RetryPolicyTest`, `ImageTagsTest`, `LinkCodesTest`, `ControlPanelLayoutTest`, `StendhalCompatSourceTest`, `CiWorkflowTest`, `VersionDriftTest` in `src/test/java/`, JUnit 5; 48 tests at 1.3.1.0. They run in both `build_local.py --test` and `./gradlew build`.
 
-The release script has its own Python tests, `tools/test_publish_modrinth.py` (unittest, 13 tests at 1.3.0.3): `python -m unittest discover -s tools -p "test_*.py"`.
+The release script has its own Python tests, `tools/test_publish_modrinth.py` (unittest, 13 tests at 1.3.1.0): `python -m unittest discover -s tools -p "test_*.py"`.
 
 ## Verification
 

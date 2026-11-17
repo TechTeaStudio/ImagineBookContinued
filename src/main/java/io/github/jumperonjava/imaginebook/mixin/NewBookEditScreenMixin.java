@@ -7,6 +7,7 @@ import io.github.jumperonjava.imaginebook.image.ImageData;
 import io.github.jumperonjava.imaginebook.util.DeletedImageData;
 import io.github.jumperonjava.imaginebook.util.BookPaste;
 import io.github.jumperonjava.imaginebook.util.ControlPanelLayout;
+import io.github.jumperonjava.imaginebook.util.LinkCodes;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.BookEditScreen;
@@ -247,15 +248,16 @@ public abstract class NewBookEditScreenMixin extends Screen implements BookEditS
             if(getCurrentEdited == null){
                 return;
             }
-            if (url.equals(getCurrentEdited.getUrl())) return;
+            // The field shows the real link; the book stores its code (LinkCodes), so compare decoded.
+            if (url.equals(LinkCodes.decode(getCurrentEdited.getUrl()))) return;
             if (url.length() > 255) {
-                urlField.setValue(I18n.get("imaginebook.error.too_long"));
+                urlField.setValue(I18n.get("imaginebook.error.url_too_long"));
                 return;
             }
             mutateImage(currentEdited, (imageData -> {
                 imageData.heightFraction = 1;
                 imageData.widthFraction = 1;
-                imageData.setUrl(Imaginebook.fixImgurLink(url));
+                imageData.setUrl(LinkCodes.encode(Imaginebook.fixImgurLink(url)));
                 return imageData;
             }));
         });
@@ -360,7 +362,7 @@ public abstract class NewBookEditScreenMixin extends Screen implements BookEditS
         var currentPageImage = getCurrentEdited();
 
         if (currentPageImage != null) {
-            urlField.setValue(currentPageImage.getUrl());
+            urlField.setValue(LinkCodes.decode(currentPageImage.getUrl()));
 
             String xpos = String.valueOf((int) currentPageImage.x());
             xPosField.setValue(xpos);
