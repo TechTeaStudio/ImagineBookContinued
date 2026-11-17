@@ -31,6 +31,7 @@ LIBS_OUT = ROOT / "build" / "libs"
 MC = "26.3"
 LOADER = "0.20.1"
 WEBP = "webp-imageio-0.1.6.jar"
+MIXINEXTRAS = "0.5.5"  # the version nested in Fabric Loader 0.20.1; build.gradle names the same one
 
 # name -> (url, sha1). Checksums pin exactly what was reviewed; a mismatch aborts the build.
 DOWNLOADS = {
@@ -97,11 +98,23 @@ def classpath(multimc):
             path = maven_path(libs, lib["name"])
             if path.exists():
                 jars.append(path)
-    jars.append(libs / f"net/fabricmc/fabric-loader/{LOADER}/fabric-loader-{LOADER}.jar")
+    loader = libs / f"net/fabricmc/fabric-loader/{LOADER}/fabric-loader-{LOADER}.jar"
+    jars.append(loader)
     missing = [j for j in jars if not j.exists()]
     if missing:
         sys.exit("missing from MultiMC: " + ", ".join(map(str, missing)))
+    jars.append(mixinextras(loader))
     return jars
+
+
+def mixinextras(loader):
+    """MixinExtras (@WrapOperation, @Local) as Fabric Loader ships it, nested in the loader jar."""
+    path = CACHE / f"mixinextras-fabric-{MIXINEXTRAS}.jar"
+    if not path.exists():
+        CACHE.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(loader) as z:
+            path.write_bytes(z.read(f"META-INF/jars/mixinextras-fabric-{MIXINEXTRAS}.jar"))
+    return path
 
 
 def java_exe():

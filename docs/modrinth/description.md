@@ -8,8 +8,8 @@ ImagineBook Continued is a maintained fork of [ImagineBook](https://modrinth.com
 
 - **Pictures from the web:** PNG, JPEG and WebP by direct link. Imgur page links are turned into direct image links for you.
 - **Pictures from the game:** `res:minecraft:textures/item/diamond.png` shows any texture from the game or from your resource packs.
-- **Full placement control:** drag a picture with the mouse, or set X, Y, width, height and rotation in the fields under the book. Scroll over a field to nudge the value; hold Shift, Ctrl or Alt to move in bigger steps.
-- **Stored in the book itself:** each picture is a short tag in the page text, `[link,x,y,width%,height%,rotation]`. Signed books keep their pictures, and you can copy a tag between books.
+- **Full placement control:** drag a picture with the mouse, or set X, Y, width, height and rotation in the fields beside the book. Scroll over a field to nudge the value; hold Shift, Ctrl or Alt to move in bigger steps.
+- **Stored in the book itself:** each picture is a short tag in the page text, `[link,x,y,width%,height%,rotation]`. Signed books keep their pictures and hide the tags; while you write, tags are faded so they never cover the picture. You can copy a tag between books.
 - **Long text paste:** pasting a long text fills the following pages, within the vanilla page and book limits.
 - **Works with Stendhal:** previous 26.x builds crashed as soon as a book and quill was opened with Stendhal installed. This fork fixes that, and both mods work side by side.
 - **Never stalls on a bad link:** downloads time out, and a broken link is retried twice with a pause, not on every frame.
@@ -18,7 +18,7 @@ ImagineBook Continued is a maintained fork of [ImagineBook](https://modrinth.com
 
 1. Take a book and quill and open it.
 2. Press **Add image** and paste a direct link to a picture, for example `https://i.imgur.com/<id>.png`.
-3. Click the picture on the page to select it. Drag it, or use the fields and buttons under the book. **Remove image** deletes it.
+3. Click the picture on the page to select it. Drag it, or use the fields and buttons beside the book. **Remove image** deletes it.
 4. Sign the book as usual if you want to share it.
 
 Players without the mod see the tag as plain text in its place.

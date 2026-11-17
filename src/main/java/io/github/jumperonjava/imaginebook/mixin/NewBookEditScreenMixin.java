@@ -6,9 +6,11 @@ import io.github.jumperonjava.imaginebook.image.Image;
 import io.github.jumperonjava.imaginebook.image.ImageData;
 import io.github.jumperonjava.imaginebook.util.DeletedImageData;
 import io.github.jumperonjava.imaginebook.util.BookPaste;
+import io.github.jumperonjava.imaginebook.util.ControlPanelLayout;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.BookEditScreen;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.PageButton;
 import net.minecraft.client.gui.components.EditBox;
@@ -190,75 +192,53 @@ public abstract class NewBookEditScreenMixin extends Screen implements BookEditS
     /** Runs after whoever built the screen (vanilla or Stendhal); see {@link BookEditScreenHooks}. */
     @Override
     public void imaginebook$afterInit() {
-        int elementHeight = 20;
-        int gap = 4;
-        int heightOffset = height - 50;
-        int columnSize = 100 - gap;
-        int smallFieldWidth = columnSize - 24;
-
-        int[] row = new int[10];
-        int[] column = new int[10];
-        int[] fieldColumn = new int[10];
-        for (int i = 0; i < 10; ++i) {
-            row[i] = i * (elementHeight + gap) + gap;
+        // Where the controls go, and why they left the bottom edge: ControlPanelLayout.
+        List<ControlPanelLayout.Rect> taken = new ArrayList<>();
+        for (var child : children()) {
+            if (child instanceof AbstractWidget widget) {
+                taken.add(new ControlPanelLayout.Rect(widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight()));
+            }
         }
-        for (int i = 0; i < 10; ++i) {
-            column[i] = i * (columnSize + gap) + gap;
-        }
-        for (int i = 0; i < 10; ++i) {
-            fieldColumn[i] = column[i] + 24;
-        }
+        var slots = ControlPanelLayout.layout(taken, width, height);
+        int elementHeight = ControlPanelLayout.ROW;
+        int smallFieldWidth = slots.xField().w();
 
-        int urlFieldX = column[0];
-        int urlFieldY = row[0];
-        int urlFieldWidth = (columnSize) * 2 + gap;
+        int urlFieldX = slots.url().x();
+        int urlFieldY = slots.url().y();
+        int urlFieldWidth = slots.url().w();
 
-        int addButtonX = column[0];
-        int addButtonY = row[1];
-        int addButtonWidth = columnSize;
+        int addButtonX = slots.add().x();
+        int addButtonY = slots.add().y();
+        int addButtonWidth = slots.add().w();
 
-        int removeButtonX = column[1];
-        int removeButtonY = row[1];
-        int removeButtonWidth = columnSize;
+        int removeButtonX = slots.remove().x();
+        int removeButtonY = slots.remove().y();
+        int removeButtonWidth = slots.remove().w();
 
-        int xPosButtonX = column[2];
-        int xPosButtonY = row[0];
-        int xPosFieldX = fieldColumn[2];
-        int xPosFieldY = row[0];
+        int xPosButtonX = slots.xButton().x();
+        int xPosButtonY = slots.xButton().y();
+        int xPosFieldX = slots.xField().x();
+        int xPosFieldY = slots.xField().y();
 
-        int yPosButtonX = column[2];
-        int yPosButtonY = row[1];
-        int yPosFieldX = fieldColumn[2];
-        int yPosFieldY = row[1];
+        int yPosButtonX = slots.yButton().x();
+        int yPosButtonY = slots.yButton().y();
+        int yPosFieldX = slots.yField().x();
+        int yPosFieldY = slots.yField().y();
 
-        int widthButtonX = column[3];
-        int widthButtonY = row[0];
-        int widthFieldX = fieldColumn[3];
-        int widthFieldY = row[0];
+        int widthButtonX = slots.widthButton().x();
+        int widthButtonY = slots.widthButton().y();
+        int widthFieldX = slots.widthField().x();
+        int widthFieldY = slots.widthField().y();
 
-        int heightButtonX = column[3];
-        int heightButtonY = row[1];
-        int heightFieldX = fieldColumn[3];
-        int heightFieldY = row[1];
+        int heightButtonX = slots.heightButton().x();
+        int heightButtonY = slots.heightButton().y();
+        int heightFieldX = slots.heightField().x();
+        int heightFieldY = slots.heightField().y();
 
-        int spinButtonX = column[4];
-        int spinButtonY = row[1];
-        int spinFieldX = fieldColumn[4];
-        int spinFieldY = row[1];
-
-        urlFieldY += heightOffset;
-        addButtonY += heightOffset;
-        removeButtonY += heightOffset;
-        xPosButtonY += heightOffset;
-        xPosFieldY += heightOffset;
-        yPosButtonY += heightOffset;
-        yPosFieldY += heightOffset;
-        widthButtonY += heightOffset;
-        widthFieldY += heightOffset;
-        heightButtonY += heightOffset;
-        heightFieldY += heightOffset;
-        spinButtonY += heightOffset;
-        spinFieldY += heightOffset;
+        int spinButtonX = slots.spinButton().x();
+        int spinButtonY = slots.spinButton().y();
+        int spinFieldX = slots.spinField().x();
+        int spinFieldY = slots.spinField().y();
 
         urlField = addRenderableWidget(new EditBox(minecraft.font, urlFieldX, urlFieldY, urlFieldWidth, elementHeight, Component.translatable("imaginebook.gui.urlhere")));
         urlField.setMaxLength(256);

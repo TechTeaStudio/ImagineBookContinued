@@ -22,6 +22,8 @@ dependencies {
     // Minecraft 26.x is unobfuscated: Loom needs no mappings line.
     minecraft "com.mojang:minecraft:${mc}"
     implementation 'net.fabricmc:fabric-loader:0.20.1'
+    // @WrapOperation and @Local; Fabric Loader 0.20.1 ships this exact version at runtime.
+    compileOnly 'io.github.llamalad7:mixinextras-fabric:0.5.5'
     runtimeOnly 'net.fabricmc.fabric-api:fabric-api:0.165.0+26.3'
     implementation 'org.sejda.imageio:webp-imageio:0.1.6'
     include 'org.sejda.imageio:webp-imageio:0.1.6'

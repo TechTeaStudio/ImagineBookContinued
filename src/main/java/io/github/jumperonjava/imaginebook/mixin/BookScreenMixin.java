@@ -1,8 +1,10 @@
 package io.github.jumperonjava.imaginebook.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import io.github.jumperonjava.imaginebook.ImageSerializer;
 import io.github.jumperonjava.imaginebook.Imaginebook;
 import io.github.jumperonjava.imaginebook.image.ImageData;
+import io.github.jumperonjava.imaginebook.util.ImageTags;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.BookViewScreen;
@@ -52,6 +54,14 @@ public abstract class BookScreenMixin extends Screen {
             images.addAll(ImageSerializer.parseSafeModeImages(page));
             imaginebook$pages.add(images);
         }
+    }
+
+    // The reader shows the page without its image tags; the book itself keeps them. visitText fetches the
+    // page, splits it into lines and caches them, so clicks on text styles match what is shown.
+    @ModifyExpressionValue(method = "visitText", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/screens/inventory/BookViewScreen$BookAccess;getPage(I)Lnet/minecraft/network/chat/Component;"))
+    private Component imaginebook$hideTags(Component page) {
+        return ImageTags.strip(page);
     }
 
     // Vanilla draws text and controls above these images, after extracting the background.

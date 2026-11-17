@@ -71,7 +71,7 @@ public class ImageSerializer {
     }
 
     public static List<ImageData> parseSafeModeImages(String page) {
-        Pattern pattern = Pattern.compile("\\[[^,]*?(,[+-]?\\d+(\\.\\d+)?){2,5}\\]");
+        Pattern pattern = io.github.jumperonjava.imaginebook.util.ImageTags.PATTERN;
 
         Matcher matcher = pattern.matcher(page);
 

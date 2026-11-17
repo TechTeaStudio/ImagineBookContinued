@@ -8,6 +8,7 @@
     "NewBookEditScreenMixin",
     "MinecraftClientMixin",
     "MultiLineEditBoxAccessor",
+    "MultiLineEditBoxMixin",
     "MultilineTextFieldAccessor",
     "RenderPipelineAccessor",
     "ScreenInitMixin"

@@ -36,7 +36,7 @@ python tools/build_local.py --test   # also compile and run the JUnit tests
 
 - Compiler: ECJ 3.46.100, run as `-25`; tests run with the JUnit Platform console launcher 1.11.4. Both are cached in `tools/.cache/` (ignored by git); the ECJ download is checked against a pinned SHA-1.
 - `webp-imageio` 0.1.6 is nested into the jar as a Fabric library with a generated `fabric.mod.json`, the same way Loom's `include` does it.
-- Classpath: Minecraft 26.3 and Fabric Loader 0.20.1 from MultiMC's `meta/` and `libraries/`.
+- Classpath: Minecraft 26.3 and Fabric Loader 0.20.1 from MultiMC's `meta/` and `libraries/`, plus MixinExtras 0.5.5, extracted once from the loader jar's `META-INF/jars/` into `tools/.cache/`. `build.gradle` has the same version `compileOnly`; the loader provides it at runtime ([[Module Layout#MixinExtras]]).
 - Environment: `MULTIMC_ROOT` (MultiMC folder, default `D:/UslessTrash/MultiMC`), `IMAGINEBOOK_JAVA` (`java.exe` of a Java 25 runtime; a JRE is enough for ECJ).
 - Output: classes in `build/local/`, `imaginebook-continued-fabric-<VERSION>+26.3.jar` and `-sources.jar` in `build/libs/`, both with `LICENSE` inside.
 - The script reads `VERSION`, like `build.gradle`; `VersionDriftTest` checks it does.
@@ -89,9 +89,9 @@ Used by CI, and locally when bandwidth allows. Fabric Loom 1.19.3 (`net.fabricmc
 
 ## Unit tests
 
-`BookPasteTest`, `RetryPolicyTest`, `StendhalCompatSourceTest`, `CiWorkflowTest`, `VersionDriftTest` in `src/test/java/`, JUnit 5. They run in both `build_local.py --test` and `./gradlew build`.
+`BookPasteTest`, `RetryPolicyTest`, `ImageTagsTest`, `ControlPanelLayoutTest`, `StendhalCompatSourceTest`, `CiWorkflowTest`, `VersionDriftTest` in `src/test/java/`, JUnit 5; 39 tests at 1.3.0.3. They run in both `build_local.py --test` and `./gradlew build`.
 
-The release script has its own Python tests, `tools/test_publish_modrinth.py` (unittest): `python -m unittest discover -s tools -p "test_*.py"`.
+The release script has its own Python tests, `tools/test_publish_modrinth.py` (unittest, 13 tests at 1.3.0.3): `python -m unittest discover -s tools -p "test_*.py"`.
 
 ## Verification
 
