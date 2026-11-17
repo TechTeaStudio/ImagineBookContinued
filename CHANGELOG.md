@@ -2,6 +2,16 @@
 
 ImagineBook Continued is a fork of [ImagineBook](https://github.com/JumperOnJava/ImagineBook) by JavaJumper and Riflusso, built on the Minecraft 26.x port by [Bratik17078](https://github.com/Bratik17078/ImagineBook). Newest version first; every heading is the content of `VERSION` at release.
 
+## 1.3.0.2
+
+First version published on Modrinth. The mod is the same as 1.3.0.0, which fixed, compared with the 26.x port of ImagineBook 1.2.9:
+
+- the crash when opening a book and quill with Stendhal installed;
+- image downloads that never timed out and blocked every later image;
+- broken image links that were downloaded again on every frame.
+
+Release tooling: fixed the CI Mixin check, which found the smoke mod's `fabric.mod.json` twice and stopped 1.3.0.1 before it was published.
+
 ## 1.3.0.1
 
 - The mod itself is unchanged from 1.3.0.0.

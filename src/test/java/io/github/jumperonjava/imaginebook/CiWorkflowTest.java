@@ -71,6 +71,16 @@ class CiWorkflowTest {
     }
 
     @Test
+    void smokeSourceSetUsesGradleDefaultsOnly() throws IOException {
+        // src/smoke/java and src/smoke/resources are already the defaults of a source set named smoke.
+        // Adding them again listed fabric.mod.json twice and failed processSmokeResources on CI (1.3.0.1).
+        String smoke = read("smoke.gradle");
+        assertFalse(smoke.contains("srcDir"), "the smoke source set must not re-add its default folders");
+        assertTrue(Files.isRegularFile(Path.of("src/smoke/resources/fabric.mod.json")));
+        assertTrue(Files.isDirectory(Path.of("src/smoke/java")));
+    }
+
+    @Test
     void sourcesJarIsPublishedNextToTheMod() throws IOException {
         String workflow = read(".github/workflows/build.yml");
         assertTrue(read("build.gradle").contains("withSourcesJar()"));

@@ -28,7 +28,7 @@ One decision per note. A replaced decision stays: it gets `status: deprecated`, 
 
 ## Status
 
-- Four decisions, all accepted and in force at version 1.3.0.1.
+- Four decisions, all accepted and in force at version 1.3.0.2.
 - Nothing superseded yet. Revisit the sources jar decision if the repository goes public.
 
 ## Decisions in force

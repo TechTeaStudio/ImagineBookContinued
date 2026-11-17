@@ -1,8 +1,8 @@
 // A separate development-only mod validates Mixin transformations without opening a window.
 sourceSets {
+    // Sources live in the defaults, src/smoke/java and src/smoke/resources. Adding them a second time
+    // listed fabric.mod.json twice and failed processSmokeResources on CI (1.3.0.1).
     smoke {
-        java.srcDir rootProject.file('src/smoke/java')
-        resources.srcDir rootProject.file('src/smoke/resources')
         compileClasspath += sourceSets.main.compileClasspath
         runtimeClasspath += sourceSets.main.runtimeClasspath
     }

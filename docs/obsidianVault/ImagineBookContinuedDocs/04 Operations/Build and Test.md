@@ -10,6 +10,7 @@ related:
   - "[[Stendhal Compatibility]]"
   - "[[Module Layout]]"
   - "[[Private repository, sources jar on every upload]]"
+  - "[[v1.3.0.2 First Modrinth release]]"
 created: 2026-11-17
 updated: 2026-11-17
 ---
@@ -74,6 +75,8 @@ Used by CI, and locally when bandwidth allows. Fabric Loom 1.19.3 (`net.fabricmc
 ```
 
 `smoke.gradle` writes the smoke jar to `build/smoke-libs/`, never to `build/libs/`, so it is never uploaded or released. The Gradle runtime has Fabric API but not Stendhal, so `runMixinSmoke` checks the Mixins without Stendhal; the local `tools/mixin_smoke.py` is the check with Stendhal.
+
+- Known pitfall: do not re-add `src/smoke/java` or `src/smoke/resources` with `srcDir` in `smoke.gradle`. They are already the default folders of the `smoke` source set; listing them again makes `processSmokeResources` fail with "Entry fabric.mod.json is a duplicate", which stopped 1.3.0.1 on CI. `CiWorkflowTest.smokeSourceSetUsesGradleDefaultsOnly` forbids `srcDir` there. The local tools build without Gradle and do not catch it. See [[v1.3.0.2 First Modrinth release]].
 
 ## CI
 

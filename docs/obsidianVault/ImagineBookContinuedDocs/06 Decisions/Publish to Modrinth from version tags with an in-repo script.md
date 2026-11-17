@@ -10,6 +10,7 @@ related:
   - "[[Private repository, sources jar on every upload]]"
   - "[[Build and Test]]"
   - "[[v1.3.0.1 Modrinth releases from CI]]"
+  - "[[v1.3.0.2 First Modrinth release]]"
 created: 2026-11-17
 updated: 2026-11-17
 ---
@@ -57,7 +58,7 @@ The full procedure is in [[Release to Modrinth]].
 - The dependency IDs live in the script (`DEPENDENCIES`: `P7dR8mSH` Fabric API, `BWloQ9jK` Stendhal), because the version API takes IDs, not slugs. A new dependency means editing the script and its test.
 - The Minecraft version `26.3` is a constant in the script (`MC`), so a new target also means editing it.
 - Releasing needs one more deliberate step: tag `product` and push the tag.
-- The first automated release is 1.3.0.1, whose mod code is identical to 1.3.0.0 (`CHANGELOG.md`: "The mod itself is unchanged from 1.3.0.0").
+- The first automated release is 1.3.0.2, whose mod code is identical to 1.3.0.0 (`CHANGELOG.md`: "The mod is the same as 1.3.0.0"). 1.3.0.1 was never released because the CI Mixin check failed; see [[v1.3.0.2 First Modrinth release]].
 
 ## Alternatives considered
 
