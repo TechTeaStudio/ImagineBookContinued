@@ -13,14 +13,14 @@ related:
   - "[[Module Layout]]"
   - "[[Fade tags in the editor, hide them in the reader]]"
 created: 2026-11-17
-updated: 2026-11-17
+updated: 2026-11-18
 ---
 
 # Store link codes, not pictures, in book text
 
 ## Status
 
-Accepted in v1.3.1.0. In force. Extended in v1.3.2.0 with the clovi codes ([[v1.3.2.0 clovi.ru and page links]]). 1.3.1.0 (`a5bc93c`) and 1.3.1.1 (`584def6`) were never pushed or released, so the codes first ship with 1.3.2.0. Not yet verified in game.
+Accepted in v1.3.1.0. In force. Extended in v1.3.2.0 with the clovi codes ([[v1.3.2.0 clovi.ru and page links]]). 1.3.1.0 (`a5bc93c`), 1.3.1.1 (`584def6`) and 1.3.2.0 (`ef44923`) were never uploaded, so the codes first reach Modrinth with 1.3.2.1, which ships the 1.3.2.0 mod code ([[v1.3.2.1 Release notes since the last upload]]). Checked in game by the owner with 1.3.2.0 on 2026-11-18, who reported that it works.
 
 ## Context
 

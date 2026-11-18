@@ -11,7 +11,7 @@ related:
   - "[[Release to Modrinth]]"
   - "[[Publish to Modrinth from version tags with an in-repo script]]"
 created: 2026-11-17
-updated: 2026-11-17
+updated: 2026-11-18
 ---
 
 # 04 Operations
@@ -24,7 +24,7 @@ How the mod is built, checked and shipped to players.
 ## Key documents
 
 - [[Build and Test]]: `tools/build_local.py`, `tools/mixin_smoke.py`, the in-game test, Gradle and the CI workflow on `product`
-- [[Release to Modrinth]]: version bump, commit, merge to `product`, `v<VERSION>` tag; CI publishes both jars to Modrinth with `tools/publish_modrinth.py` and creates the GitHub Release; manual upload as the fallback
+- [[Release to Modrinth]]: version bump, commit, merge to `product`, `v<VERSION>` tag; CI publishes both jars to Modrinth with `tools/publish_modrinth.py` and creates the GitHub Release; release notes hold every version since the last upload, previewed with `--dry-run --since`; manual upload as the fallback
 
 ## Active decisions
 
@@ -34,7 +34,7 @@ How the mod is built, checked and shipped to players.
 
 ## Status
 
-- Two runbooks, matching version 1.3.2.0 (71 JUnit and 13 Python tests).
+- Two runbooks, matching version 1.3.2.1 (71 JUnit and 18 Python tests).
 - There is no version bump script yet; `VERSION` and `CHANGELOG.md` are edited by hand and `VersionDriftTest` checks them.
 
 ## All notes

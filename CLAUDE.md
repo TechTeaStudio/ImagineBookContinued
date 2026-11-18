@@ -62,7 +62,7 @@ python tools/mixin_smoke.py
 
 `product` is the release branch; day-to-day work happens on `main`. `.github/workflows/build.yml` runs on push and pull request to `product` and on `v*` tags. `CiWorkflowTest` holds the workflow and the build scripts to each other.
 
-A release is a `v<VERSION>` tag on `product` (`git tag v<VERSION> product`, then push the tag, only when the owner asks). CI then runs `tools/publish_modrinth.py`, which uploads the jar and its sources jar to Modrinth (project slug `imaginebook-continued`, Fabric, 26.3, client only, Fabric API required, Stendhal optional) with the `CHANGELOG.md` section as the changelog, and creates a GitHub Release.
+A release is a `v<VERSION>` tag on `product` (`git tag v<VERSION> product`, then push the tag, only when the owner asks). CI then runs `tools/publish_modrinth.py`, which uploads the jar and its sources jar to Modrinth (project slug `imaginebook-continued`, Fabric, 26.3, client only, Fabric API required, Stendhal optional) with the `CHANGELOG.md` sections of every version since the newest one already on Modrinth as the changelog (`changelog_since`; versions committed but never uploaded must still reach players), and creates a GitHub Release.
 
 - Publishing is tag-only on purpose: every Modrinth version notifies followers, so a CI or docs bump must not publish.
 - The script refuses a tag that does not match `VERSION`, an empty changelog section or a missing sources jar, and skips a version already on Modrinth, so re-running the job is safe.

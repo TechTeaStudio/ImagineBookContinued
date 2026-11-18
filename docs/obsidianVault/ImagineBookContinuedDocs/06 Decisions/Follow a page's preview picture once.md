@@ -10,14 +10,14 @@ related:
   - "[[Store link codes, not pictures, in book text]]"
   - "[[Module Layout]]"
 created: 2026-11-17
-updated: 2026-11-17
+updated: 2026-11-18
 ---
 
 # Follow a page's preview picture once
 
 ## Status
 
-Accepted in v1.3.2.0. In force. Checked live on 2026-11-17: with the mod's own classes against a clovi post, and `PagePreview` against a single-picture Imgur page. No Imgur album or gallery page was fetched. Not yet verified in game.
+Accepted in v1.3.2.0. In force. Checked live on 2026-11-17: with the mod's own classes against a clovi post, and `PagePreview` against a single-picture Imgur page. No Imgur album or gallery page was fetched. Checked in game by the owner with 1.3.2.0 on 2026-11-18, who reported that it works; it reaches Modrinth with 1.3.2.1.
 
 ## Context
 

@@ -10,7 +10,7 @@ related:
   - "[[Module Layout]]"
   - "[[Follow a page's preview picture once]]"
 created: 2026-11-17
-updated: 2026-11-17
+updated: 2026-11-18
 ---
 
 # 06 Decisions
@@ -28,11 +28,11 @@ One decision per note. A replaced decision stays: it gets `status: deprecated`, 
 - [[Follow a page's preview picture once]]: a download that is not a picture is followed once to the page's `og:image` (else `twitter:image`), http and https only, same limits, cached under the page's address; resolving post links at paste time in the editor was rejected
 - [[Single Fabric 26.3 target]]: one build, Fabric for Minecraft 26.3; other targets dropped, kept in git history
 - [[Private repository, sources jar on every upload]]: LGPL-3.0 compliance while the repository is private
-- [[Publish to Modrinth from version tags with an in-repo script]]: CI publishes only from a `v<VERSION>` tag, with the standard-library `tools/publish_modrinth.py` instead of a third-party action or Gradle plugin
+- [[Publish to Modrinth from version tags with an in-repo script]]: CI publishes only from a `v<VERSION>` tag, with the standard-library `tools/publish_modrinth.py` instead of a third-party action or Gradle plugin; since 1.3.2.1 the release notes hold every version since the last upload
 
 ## Status
 
-- Seven decisions, all accepted and in force at version 1.3.2.0.
+- Seven decisions, all accepted and in force at version 1.3.2.1.
 - Nothing superseded yet. Revisit the sources jar decision if the repository goes public.
 
 ## Decisions in force

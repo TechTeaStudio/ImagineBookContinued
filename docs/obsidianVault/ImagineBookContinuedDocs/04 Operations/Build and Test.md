@@ -12,8 +12,9 @@ related:
   - "[[Private repository, sources jar on every upload]]"
   - "[[v1.3.0.2 First Modrinth release]]"
   - "[[v1.3.2.0 clovi.ru and page links]]"
+  - "[[v1.3.2.1 Release notes since the last upload]]"
 created: 2026-11-17
-updated: 2026-11-17
+updated: 2026-11-18
 ---
 
 # Build and Test
@@ -90,11 +91,11 @@ Used by CI, and locally when bandwidth allows. Fabric Loom 1.19.3 (`net.fabricmc
 
 ## Unit tests
 
-`BookPasteTest`, `RetryPolicyTest`, `PagePreviewTest`, `ImageTagsTest`, `ImageFitTest`, `LinkCodesTest`, `ControlPanelLayoutTest`, `StendhalCompatSourceTest`, `CiWorkflowTest`, `VersionDriftTest` in `src/test/java/`, JUnit 5; 71 tests at 1.3.2.0. History: 48 at 1.3.1.0; 60 at 1.3.1.1 (6 more in `ImageTagsTest`, 6 in the new `ImageFitTest`, see [[v1.3.1.1 Bracket text and fitted pictures]]); 71 at 1.3.2.0 (4 more in `LinkCodesTest`: 2 for clovi codes, 2 for Imgur albums and galleries and `directImgurLink`; 7 in the new `PagePreviewTest`, see [[v1.3.2.0 clovi.ru and page links]]). They run in both `build_local.py --test` and `./gradlew build`.
+`BookPasteTest`, `RetryPolicyTest`, `PagePreviewTest`, `ImageTagsTest`, `ImageFitTest`, `LinkCodesTest`, `ControlPanelLayoutTest`, `StendhalCompatSourceTest`, `CiWorkflowTest`, `VersionDriftTest` in `src/test/java/`, JUnit 5; 71 tests at 1.3.2.1, unchanged since 1.3.2.0. History: 48 at 1.3.1.0; 60 at 1.3.1.1 (6 more in `ImageTagsTest`, 6 in the new `ImageFitTest`, see [[v1.3.1.1 Bracket text and fitted pictures]]); 71 at 1.3.2.0 (4 more in `LinkCodesTest`: 2 for clovi codes, 2 for Imgur albums and galleries and `directImgurLink`; 7 in the new `PagePreviewTest`, see [[v1.3.2.0 clovi.ru and page links]]). They run in both `build_local.py --test` and `./gradlew build`.
 
 - `PagePreviewTest` (`src/test/java/.../resolvers/PagePreviewTest.java`) needs no network: it parses the head of the real clovi post https://clovi.ru/post/12207 as served on 2026-11-17, checks picture signatures on byte arrays, and reads `AsyncImageDownloader.java` to check the page step reads the preview once through `readLimited`. Like the other source checks it reads paths relative to the repository root, so run the tests from there.
 
-The release script has its own Python tests, `tools/test_publish_modrinth.py` (unittest, 13 tests at 1.3.2.0, unchanged since 1.3.1.1): `python -m unittest discover -s tools -p "test_*.py"`.
+The release script has its own Python tests, `tools/test_publish_modrinth.py` (unittest, 18 tests at 1.3.2.1): `python -m unittest discover -s tools -p "test_*.py"`. History: 13 at 1.3.2.0; 18 at 1.3.2.1 (5 in the new `ChangelogSince` class for the release notes since the last upload, see [[v1.3.2.1 Release notes since the last upload]] and [[Release to Modrinth#Release notes since the last upload]]).
 
 ## Verification
 

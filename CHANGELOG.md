@@ -2,6 +2,12 @@
 
 ImagineBook Continued is a fork of [ImagineBook](https://github.com/JumperOnJava/ImagineBook) by JavaJumper and Riflusso, built on the Minecraft 26.x port by [Bratik17078](https://github.com/Bratik17078/ImagineBook). Newest version first; every heading is the content of `VERSION` at release.
 
+## 1.3.2.1
+
+- The mod itself is unchanged from 1.3.2.0.
+- Release notes on Modrinth now list every version since the previous upload, so the changes of 1.3.1.0 and 1.3.1.1, which were never uploaded on their own, reach players too.
+- Shorter, simpler Modrinth page text.
+
 ## 1.3.2.0
 
 - clovi.ru support. A file link (`clovi.ru/f/<id>`) is stored as `clovi:<id>`, a post link (`clovi.ru/post/<number>`) as `clovi:post/<number>`.

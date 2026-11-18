@@ -14,7 +14,7 @@ related:
   - "[[Store link codes, not pictures, in book text]]"
   - "[[Follow a page's preview picture once]]"
 created: 2026-11-17
-updated: 2026-11-17
+updated: 2026-11-18
 ---
 
 # Vault Map
@@ -28,7 +28,7 @@ Where things live in the ImagineBook Continued vault. Skim this before creating 
 - **What it does:** adds images to book and quill and written books. An image is a text tag on the page, `[link,x,y,width%,height%,rotation]`. Since 1.3.1.0 the editor stores a web link as a code, `imgur:<id>` or `u:<base64url>`, and since 1.3.2.0 `clovi:<file id>` or `clovi:post/<number>`, so the book holds no web address; plain `http:` and `https:` links in older books still work, and `res:` takes a resource id. Since 1.3.2.0 a link to a web page shows the page's preview picture. The mod is client-side only; other players who have it (1.3.1.0 or later for codes, 1.3.2.0 or later for clovi codes) see the images, players without it see the tag text.
 - **Target:** Minecraft 26.3 (unobfuscated, Mojang names at runtime), Fabric Loader 0.20.1, Fabric API, Java 25. Stendhal is an optional companion mod.
 - **Licence:** LGPL-3.0-only (`LICENSE`).
-- **Version:** single source is the `VERSION` file (1.3.2.0 now, 1.3.0.0 when this vault was created), odometer style, one digit per part. `VersionDriftTest` holds `build.gradle`, `fabric.mod.json`, `tools/build_local.py` and the newest `CHANGELOG.md` heading to it.
+- **Version:** single source is the `VERSION` file (1.3.2.1 now, 1.3.0.0 when this vault was created), odometer style, one digit per part. `VersionDriftTest` holds `build.gradle`, `fabric.mod.json`, `tools/build_local.py` and the newest `CHANGELOG.md` heading to it.
 - **Branches:** day-to-day work on `main`, releases on `product`.
 - **Distribution:** Modrinth, slug `imaginebook-continued`.
 

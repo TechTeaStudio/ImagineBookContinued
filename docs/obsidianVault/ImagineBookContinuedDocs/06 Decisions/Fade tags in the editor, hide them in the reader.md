@@ -10,14 +10,14 @@ related:
   - "[[Stendhal Compatibility]]"
   - "[[v1.3.0.3 Tags faded, controls beside the book]]"
 created: 2026-11-17
-updated: 2026-11-17
+updated: 2026-11-18
 ---
 
 # Fade tags in the editor, hide them in the reader
 
 ## Status
 
-Accepted in v1.3.0.3. In force. Not yet verified in game.
+Accepted in v1.3.0.3. In force. Covered by the owner's in-game check of 1.3.2.0 on 2026-11-18, which carries this change; he reported that it works. Whether Stendhal was installed during that check is not recorded.
 
 ## Context
 

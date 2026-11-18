@@ -1,8 +1,9 @@
 """Publish the built mod jar and its sources jar to Modrinth as a new version.
 
 Run by .github/workflows/build.yml on a `v*` tag, after the build, the tests and the Mixin check
-passed. Everything comes from the repository: VERSION is the version, its CHANGELOG.md section is the
-changelog, build/libs holds the two jars. Standard library only, so CI needs no extra download.
+passed. Everything comes from the repository: VERSION is the version, the CHANGELOG.md sections of
+every version since the last upload are the changelog, build/libs holds the two jars. Standard
+library only, so CI needs no extra download.
 
 Environment:
     MODRINTH_TOKEN    personal access token with the scopes Create versions, Read projects and
@@ -13,10 +14,12 @@ Environment:
 Usage (from the repository root):
     python tools/publish_modrinth.py --tag v1.3.0.1   # publish
     python tools/publish_modrinth.py --dry-run        # print the version data, send nothing
+    python tools/publish_modrinth.py --dry-run --since 1.3.0.3   # as if 1.3.0.3 were the last upload
 """
 import argparse
 import json
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -49,6 +52,36 @@ def changelog_section(text, version):
     if not body:
         sys.exit(f"CHANGELOG.md section '## {version}' is empty")
     return body
+
+
+FORK_VERSION = re.compile(r"^\d\.\d\.\d\.\d$")
+
+
+def changelog_since(text, version, published):
+    """Release notes: every section from `version` back to the newest version already on Modrinth.
+
+    Versions that were committed but never uploaded (1.3.1.0 and 1.3.1.1 went straight to 1.3.2.x)
+    would otherwise never reach players' notes. A first upload, or one right after the previous
+    version, gets its own section only; the walk never goes past this fork's own history.
+    """
+    if not published:
+        return changelog_section(text, version)
+    headings = [line[3:].split()[0] for line in text.splitlines() if line.startswith("## ") and line[3:].split()]
+    if version not in headings:
+        sys.exit(f"CHANGELOG.md has no '## {version}' heading")
+    sections = []
+    for heading in headings[headings.index(version):]:
+        if heading in published or not FORK_VERSION.match(heading):
+            break
+        sections.append(heading)
+    if len(sections) == 1:
+        return changelog_section(text, version)
+    return "\n\n".join(f"### {v}\n\n{changelog_section(text, v)}" for v in sections)
+
+
+def published_versions(versions):
+    """Version numbers already on Modrinth, without the `+<minecraft>` suffix."""
+    return {v.get("version_number", "").split("+")[0] for v in versions}
 
 
 def check_tag(tag, version):
@@ -119,13 +152,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", default="")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--since", nargs="*", default=[], help="dry run only: versions to treat as already uploaded")
     args = ap.parse_args()
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-    changelog = changelog_section((ROOT / "CHANGELOG.md").read_text(encoding="utf-8"), version)
+    text = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    changelog = changelog_section(text, version)
     jar, sources = find_jars(ROOT / "build" / "libs", version)
     project = os.environ.get("MODRINTH_PROJECT", "imaginebook-continued")
     if args.dry_run:
-        print(json.dumps(version_data(version, f"<id of {project}>", changelog), indent=2))
+        notes = changelog_since(text, version, set(args.since)) if args.since else changelog
+        print(json.dumps(version_data(version, f"<id of {project}>", notes), indent=2))
         print("files:", jar.name, sources.name)
         return
     check_tag(args.tag, version)
@@ -133,12 +169,13 @@ def main():
     if not token:
         sys.exit("MODRINTH_TOKEN is not set; add it as a repository secret")
     project_id = call("GET", f"/project/{project}", token)["id"]
-    data = version_data(version, project_id, changelog)
-    # Re-running a release job must not fail on, or duplicate, a version that is already up.
     existing = call("GET", f"/project/{project_id}/version", token) or []
-    if any(v.get("version_number") == data["version_number"] for v in existing):
-        print(f"{data['version_number']} is already on Modrinth; nothing to do")
+    published = published_versions(existing)
+    # Re-running a release job must not fail on, or duplicate, a version that is already up.
+    if version in published:
+        print(f"{version}+{MC} is already on Modrinth; nothing to do")
         return
+    data = version_data(version, project_id, changelog_since(text, version, published))
     body, content_type = multipart({"data": json.dumps(data)}, {"primary": jar, "sources": sources})
     created = call("POST", "/version", token, body, content_type)
     print(f"published {created['version_number']} (version id {created['id']}) to Modrinth project {project}")

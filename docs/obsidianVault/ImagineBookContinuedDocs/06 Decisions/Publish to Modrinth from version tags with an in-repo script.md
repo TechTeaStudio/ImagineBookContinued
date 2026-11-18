@@ -11,15 +11,16 @@ related:
   - "[[Build and Test]]"
   - "[[v1.3.0.1 Modrinth releases from CI]]"
   - "[[v1.3.0.2 First Modrinth release]]"
+  - "[[v1.3.2.1 Release notes since the last upload]]"
 created: 2026-11-17
-updated: 2026-11-17
+updated: 2026-11-18
 ---
 
 # Publish to Modrinth from version tags with an in-repo script
 
 ## Status
 
-Accepted in v1.3.0.1.
+Accepted in v1.3.0.1. Extended in v1.3.2.1: the release notes are the `CHANGELOG.md` sections of every version since the last upload, not only the newest one ([[v1.3.2.1 Release notes since the last upload]]).
 
 ## Context
 
@@ -36,7 +37,7 @@ CI publishes to Modrinth only from a `v<VERSION>` tag, using our own standard-li
 
 - `build.yml` triggers on `v*` tags as well as on `product`. The publish step runs only when `github.ref` starts with `refs/tags/v`, after the Gradle build, the release script tests and the Mixin smoke.
 - `tools/publish_modrinth.py` uses only the Python standard library (`urllib`, `json`, `uuid`) and builds the multipart request itself.
-- It takes everything from the repository: `VERSION`, the `CHANGELOG.md` section, the two jars in `build/libs/`.
+- It takes everything from the repository: `VERSION`, the `CHANGELOG.md` section, the two jars in `build/libs/`. Since 1.3.2.1 it also sends the sections of versions that were committed but never uploaded, back to the newest version on Modrinth (`changelog_since`, see [[Release to Modrinth#Release notes since the last upload]]).
 - It refuses a tag that is not `v` + `VERSION`, an empty changelog section or a missing jar, and skips a `version_number` that is already on Modrinth, so a re-run is safe.
 - `tools/test_publish_modrinth.py` unit-tests it; CI runs those tests before the publish step.
 - The token is the repository secret `MODRINTH_TOKEN`.

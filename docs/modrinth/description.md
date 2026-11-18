@@ -1,47 +1,32 @@
 # ImagineBook Continued
 
-**Put pictures in your books.** Paste a link into a book and quill, place the picture on the page, move, resize and rotate it, then sign the book. Everyone who has the mod sees the picture. The mod is client-side only, so it works on any server, vanilla ones included.
-
-ImagineBook Continued is a maintained fork of [ImagineBook](https://modrinth.com/mod/imaginebook) by JavaJumper and Riflusso, built on the Minecraft 26.x port by Bratik17078. It brings the mod to **Minecraft 26.3 on Fabric** and makes it work together with **[Stendhal](https://modrinth.com/mod/stendhal)**.
-
-## Features
-
-- **Pictures from the web:** PNG, JPEG and WebP by direct link, Imgur and clovi.ru links, and links to pages that have a preview picture, such as a clovi.ru post.
-- **No links in the book:** servers that block web addresses in books accept yours. The book stores a short code instead of the address (`imgur:<id>` for Imgur, `clovi:<id>` for clovi.ru, an encoded form for other sites), and your game downloads from the real address.
-- **Pictures from the game:** `res:minecraft:textures/item/diamond.png` shows any texture from the game or from your resource packs.
-- **Full placement control:** drag a picture with the mouse, or set X, Y, width, height and rotation in the fields beside the book. Scroll over a field to nudge the value; hold Shift, Ctrl or Alt to move in bigger steps.
-- **Stored in the book itself:** each picture is a short tag in the page text, `[link,x,y,width%,height%,rotation]`. Signed books keep their pictures and hide the tags; while you write, tags are faded so they never cover the picture. You can copy a tag between books.
-- **Long text paste:** pasting a long text fills the following pages, within the vanilla page and book limits.
-- **Works with Stendhal:** previous 26.x builds crashed as soon as a book and quill was opened with Stendhal installed. This fork fixes that, and both mods work side by side.
-- **Never stalls on a bad link:** downloads time out, and a broken link is retried twice with a pause, not on every frame.
+**Pictures in your books.** Paste a picture link into a book and quill, place the picture on the page and sign the book. Everyone with the mod sees it. Works on any server, with nothing to install there.
 
 ## How to use
 
-1. Take a book and quill and open it.
-2. Press **Add image** and paste a direct link to a picture, for example `https://i.imgur.com/<id>.png`. The picture appears on the page, shrunk to fit it.
-3. Click the picture on the page to select it. Drag it, or use the fields and buttons beside the book. **Remove image** deletes it.
-4. Sign the book as usual if you want to share it.
+1. Open a book and quill and press **Add image**.
+2. Paste a link to a picture: Imgur, clovi.ru or any direct image link. The picture appears on the page, sized to fit.
+3. Drag it with the mouse, or set position, size and rotation with the controls beside the book.
+4. Sign the book to share it.
 
-Players without the mod see the tag as plain text in its place.
+## What this version does better
 
-## Compatibility
+- **Works with Stendhal.** Older 26.x builds crashed as soon as you opened a book with Stendhal installed.
+- **Servers don't see links.** The book stores a short code instead of a web address, so servers that block links in books accept yours.
+- **Clean pages.** The picture's code is hidden in signed books and faded while you write.
+- **More sources.** Imgur and clovi.ru links (posts too), any direct link to a PNG, JPEG or WebP picture, web pages that have a preview picture, and textures from the game, such as `res:minecraft:textures/item/diamond.png`.
+- **No hold-ups.** A broken or slow link never holds up the other pictures.
+- **Long text paste** fills the next pages.
 
-- Minecraft 26.3, Fabric Loader 0.20.1 or newer, Fabric API, Java 25.
-- Client only: install it on your game, not on the server.
-- Compatible with Stendhal 1.4.9.
+## Good to know
 
-## Privacy
+- Minecraft 26.3, Fabric, needs Fabric API.
+- Install it on your game only, not on the server.
+- Players without the mod see a short code where the picture is. Older ImagineBook versions show an error icon instead of the picture.
+- Your game downloads each picture straight from its site, which sees your IP address like any web page does. Pictures are kept in the `imaginebook` folder of your game directory; delete it to clear them.
 
-When a page with a picture is shown for the first time, your game downloads that picture straight from the host in the link, so the host sees your IP address, as with any web page. Downloaded pictures are kept in the `imaginebook` folder of your game directory and loaded from there next time; delete the folder to clear them. Nothing else is sent anywhere.
+## Licence and credits
 
-## Licence and source
+LGPL-3.0-only, like the original. Every version has its source code attached as a `-sources.jar` file.
 
-LGPL-3.0-only, the same licence as the original ImagineBook. The source code of every version is attached to that version on this page as the `-sources.jar` file.
-
-## Credits
-
-- **JavaJumper:** the original ImagineBook
-- **Riflusso:** NeoForge port and updates of the original
-- **Bratik17078:** the Minecraft 26.2 and 26.3 port and the long text paste
-- **webp-imageio** by Sejda: WebP support
-- **Tech Tea Studio:** this fork, the Stendhal fix and the download fixes
+Based on [ImagineBook](https://modrinth.com/mod/imaginebook) by JavaJumper and Riflusso and on the Minecraft 26.x port by Bratik17078. WebP support by webp-imageio (Sejda). Maintained by Tech Tea Studio.

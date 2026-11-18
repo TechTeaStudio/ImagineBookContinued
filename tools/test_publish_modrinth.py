@@ -42,6 +42,63 @@ class ChangelogSection(unittest.TestCase):
             P.changelog_section("## 1.3.0.2\n\n## 1.3.0.1\n- x\n", "1.3.0.2")
 
 
+LONG = """# Changelog
+
+## 1.3.2.1
+
+- Notes since the last upload.
+
+## 1.3.2.0
+
+- clovi.
+
+## 1.3.1.1
+
+- Brackets.
+
+## 1.3.1.0
+
+- Link codes.
+
+## 1.3.0.3
+
+- Faded tags.
+
+## 1.3.0.2
+
+- First upload.
+
+## 1.2.9 (upstream and the 26.x port)
+
+- Old.
+"""
+
+
+class ChangelogSince(unittest.TestCase):
+    def test_collects_every_version_not_yet_uploaded(self):
+        # 1.3.1.0 and 1.3.1.1 were never uploaded; their notes must reach players with the next upload.
+        notes = P.changelog_since(LONG, "1.3.2.1", {"1.3.0.2", "1.3.0.3"})
+        self.assertEqual(notes, "### 1.3.2.1\n\n- Notes since the last upload.\n\n"
+                                "### 1.3.2.0\n\n- clovi.\n\n"
+                                "### 1.3.1.1\n\n- Brackets.\n\n"
+                                "### 1.3.1.0\n\n- Link codes.")
+
+    def test_next_version_after_an_upload_is_its_own_section(self):
+        self.assertEqual(P.changelog_since(LONG, "1.3.0.3", {"1.3.0.2"}), "- Faded tags.")
+
+    def test_first_upload_takes_only_its_own_section(self):
+        self.assertEqual(P.changelog_since(LONG, "1.3.0.2", set()), "- First upload.")
+
+    def test_never_reaches_upstream_history(self):
+        notes = P.changelog_since(LONG, "1.3.0.3", {"9.9.9.9"})
+        self.assertNotIn("Old.", notes)
+        self.assertIn("### 1.3.0.2", notes)
+
+    def test_published_numbers_lose_the_minecraft_suffix(self):
+        self.assertEqual(P.published_versions([{"version_number": "1.3.0.3+26.3"}, {"version_number": "1.3.0.2+26.3"}]),
+                         {"1.3.0.3", "1.3.0.2"})
+
+
 class Tag(unittest.TestCase):
     def test_tag_must_name_the_version(self):
         P.check_tag("v1.3.0.1", "1.3.0.1")
