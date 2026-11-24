@@ -8,8 +8,9 @@ ImagineBook Continued is Tech Tea Studio's maintained fork of [ImagineBook](http
 
 - Open a book and quill, press **Add image**, paste a link to a PNG, JPEG or WebP picture, then move, resize and rotate it with the controls beside the book.
 - The image lives in the page text as a tag, so a signed book keeps it: `[url,x,y,width%,height%,rotation]`. A signed book hides the tag and the editor fades it; players without the mod see it as plain text.
-- The tag never holds a web address, so servers that filter links accept the book: an Imgur link is stored as `imgur:<id>`, a clovi.ru link as `clovi:<id>` or `clovi:post/<number>`, any other link as `u:<base64url>`. The game downloads from the real address.
+- The tag never holds a web address (some link filters still refuse it, see hidden links below): an Imgur link is stored as `imgur:<id>`, a clovi.ru link as `clovi:<id>` or `clovi:post/<number>`, any other link as `u:<base64url>`. The game downloads from the real address.
 - A link to a page works when the page names a preview picture (`og:image`), as clovi.ru posts and Imgur pages do.
+- Hidden links (off by default, a switch under the book): Imgur and clovi pictures are written as a caption with an invisible code of spaces and zero-width characters, so the page text holds no link at all. Use it only where the server allows pictures in books.
 - `res:<namespace>:<path>` shows a texture from the game or a resource pack instead of a web picture.
 - Pasting long text into the book fills the next pages within the vanilla page and book limits.
 
@@ -39,11 +40,11 @@ The second command checks, without opening a game window, that every Mixin appli
 
 ## Releases
 
-The release branch is `product`. A push or pull request to it builds the mod and runs the checks. A `v*` tag that names `VERSION` (for example `v1.3.2.1`) is a release: CI publishes the version to [Modrinth](https://modrinth.com/mod/imaginebook-continued) with the `CHANGELOG.md` sections of every version since the previous upload and creates a GitHub Release. Every published jar ships with its sources jar.
+The release branch is `product`. A push or pull request to it builds the mod and runs the checks. A `v*` tag that names `VERSION` (for example `v1.4.0.0`) is a release: CI publishes the version to [Modrinth](https://modrinth.com/mod/imaginebook-continued) with the `CHANGELOG.md` sections of every version since the previous upload and creates a GitHub Release. Every published jar ships with its sources jar.
 
 ```bash
-git tag v1.3.2.1 product
-git push origin v1.3.2.1
+git tag v1.4.0.0 product
+git push origin v1.4.0.0
 ```
 
 The Modrinth upload needs a repository secret `MODRINTH_TOKEN`: a Modrinth personal access token with the scopes Create versions, Read projects and Read versions.

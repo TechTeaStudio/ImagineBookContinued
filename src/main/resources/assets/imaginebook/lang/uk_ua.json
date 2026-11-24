@@ -8,5 +8,9 @@
   "imaginebook.gui.urlhere": "Вставте посилання сюди",
   "imaginebook.gui.extended.false": "Звичайний режим",
   "imaginebook.gui.extended.true": "Розширений режим",
-  "imaginebook.error.paste_too_large": "Вставлення перевищить ліміт книги у %s сторінок. Текст не змінено."
+  "imaginebook.error.paste_too_large": "Вставлення перевищить ліміт книги у %s сторінок. Текст не змінено.",
+  "imaginebook.gui.hide.on": "Сховати посилання: увімк",
+  "imaginebook.gui.hide.off": "Сховати посилання: вимк",
+  "imaginebook.gui.hide.tooltip": "Увімк: картинки з Imgur і clovi записуються підписом із невидимим кодом, у тексті сторінки немає посилання. Вмикай лише там, де сервер дозволяє картинки в книгах.",
+  "imaginebook.hidden.caption": "Малюнок"
 }

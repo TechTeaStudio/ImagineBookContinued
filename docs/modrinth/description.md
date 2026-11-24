@@ -12,10 +12,11 @@
 ## What this version does better
 
 - **Works with Stendhal.** Older 26.x builds crashed as soon as you opened a book with Stendhal installed.
-- **Servers don't see links.** The book stores a short code instead of a web address, so servers that block links in books accept yours.
+- **No web addresses in the book.** It stores a short code instead of a link.
 - **Clean pages.** The picture's code is hidden in signed books and faded while you write.
 - **More sources.** Imgur and clovi.ru links (posts too), any direct link to a PNG, JPEG or WebP picture, web pages that have a preview picture, and textures from the game, such as `res:minecraft:textures/item/diamond.png`.
 - **No hold-ups.** A broken or slow link never holds up the other pictures.
+- **Hidden links (optional).** A switch under the book writes Imgur and clovi pictures as a caption with an invisible code, so the page text holds no link at all. Use it only where the server allows pictures in books.
 - **Long text paste** fills the next pages.
 
 ## Good to know

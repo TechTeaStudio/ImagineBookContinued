@@ -15,6 +15,8 @@ public class ImageData {
     public float widthFraction = 1;
     public float heightFraction = 1;
     public float rotation;
+    /** The visible caption of a hidden picture (util.HiddenImages); null for a picture written as a tag. */
+    public String caption;
 
     public ImageData(String url, short x, short y, float widthFraction, float heightFraction) {
         this.setUrl(url);
@@ -31,6 +33,7 @@ public class ImageData {
         this.widthFraction = image.widthFraction;
         this.heightFraction = image.heightFraction;
         this.rotation = image.rotation;
+        this.caption = image.caption;
     }
 
     public ImageData() {

@@ -8,5 +8,9 @@
   "imaginebook.gui.urlhere": "Paste link here",
   "imaginebook.gui.extended.false": "Mode: Default",
   "imaginebook.gui.extended.true": "Mode: Extended",
-  "imaginebook.error.paste_too_large": "Paste would exceed the %s-page book limit. No text was changed."
+  "imaginebook.error.paste_too_large": "Paste would exceed the %s-page book limit. No text was changed.",
+  "imaginebook.gui.hide.on": "Hide link: on",
+  "imaginebook.gui.hide.off": "Hide link: off",
+  "imaginebook.gui.hide.tooltip": "On: Imgur and clovi pictures are written as a caption with an invisible code, so the page text holds no link. Use it only where the server allows pictures in books.",
+  "imaginebook.hidden.caption": "Picture"
 }

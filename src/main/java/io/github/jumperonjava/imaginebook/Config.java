@@ -26,10 +26,21 @@ public class Config {
     public void mutateData(Function<Data, Data> function) {
         var data = function.apply(get());
         FileReadWrite.write(file, JSON.toJson(data));
+        cached = data;
+    }
+
+    private Data cached;
+
+    /** The settings, read from the file once; the editor asks on every drag step. */
+    public Data data() {
+        if (cached == null) cached = get();
+        return cached;
     }
 
     public static class Data {
         public boolean imgurAccept = false;
+        /** Write Imgur and clovi pictures as a caption with an invisible code (util.HiddenImages). Off by default. */
+        public boolean hideLinks = false;
     }
 
 }

@@ -70,17 +70,21 @@ public class ImageSerializer {
         return images;
     }
 
+    /**
+     * The pictures of a page in page order: visible tags and hidden pictures (HiddenImages) alike. The
+     * index of a picture here is the index ImageTags.replace rewrites, so both walk ImageTags.find.
+     */
     public static List<ImageData> parseSafeModeImages(String page) {
-        Pattern pattern = io.github.jumperonjava.imaginebook.util.ImageTags.PATTERN;
-
-        Matcher matcher = pattern.matcher(page);
-
         List<ImageData> images = new ArrayList<>();
-        while (matcher.find()) {
-            var str = matcher.group();
-            if (str == null) {
+        List<io.github.jumperonjava.imaginebook.util.HiddenImages.Decoded> hidden =
+                io.github.jumperonjava.imaginebook.util.HiddenImages.findAll(page);
+        for (var span : io.github.jumperonjava.imaginebook.util.ImageTags.find(page)) {
+            var match = hidden.stream().filter(d -> d.start() == span.start()).findFirst();
+            if (match.isPresent()) {
+                images.add(match.get().image());
                 continue;
             }
+            var str = page.substring(span.start(), span.end());
             var data = new ImageData();
             try {
                 var elements = Arrays.stream(str

@@ -2,6 +2,12 @@
 
 ImagineBook Continued is a fork of [ImagineBook](https://github.com/JumperOnJava/ImagineBook) by JavaJumper and Riflusso, built on the Minecraft 26.x port by [Bratik17078](https://github.com/Bratik17078/ImagineBook). Newest version first; every heading is the content of `VERSION` at release.
 
+## 1.4.0.0
+
+- Hidden links, off by default: a "Hide link" switch under the book. When it is on, Imgur and clovi pictures are written as a short caption ("Picture") followed by an invisible code made of spaces and zero-width characters, so the page text holds no link, no domain and no tag. Players without the mod see only the caption. Pictures from other sites keep the visible link codes.
+- Use hidden links only where the server allows pictures in books.
+- Hidden pictures need ImagineBook Continued 1.4.0.0 or newer to show. Typing inside the invisible code, right after the caption, breaks that picture; the caption stays as plain text.
+
 ## 1.3.2.1
 
 - The mod itself is unchanged from 1.3.2.0.

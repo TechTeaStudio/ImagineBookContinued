@@ -29,7 +29,7 @@ class ControlPanelLayoutTest {
 
     private static List<Slot> slots(ControlPanelLayout.Slots s) {
         return List.of(s.add(), s.remove(), s.url(), s.xButton(), s.xField(), s.yButton(), s.yField(),
-                s.widthButton(), s.widthField(), s.heightButton(), s.heightField(), s.spinButton(), s.spinField());
+                s.widthButton(), s.widthField(), s.heightButton(), s.heightField(), s.spinButton(), s.spinField(), s.hide());
     }
 
     private static void assertClear(ControlPanelLayout.Slots layout, List<Rect> taken) {
@@ -80,6 +80,19 @@ class ControlPanelLayoutTest {
                 Rect b = new Rect(all.get(j).x(), all.get(j).y(), all.get(j).w(), ControlPanelLayout.ROW);
                 assertFalse(a.intersects(b), all.get(i) + " and " + all.get(j));
             }
+        }
+    }
+
+    @Test
+    void hiddenLinkToggleIsTheLastFullWidthRow() {
+        var layout = ControlPanelLayout.panel(10, 20, 200);
+        assertEquals(10, layout.hide().x());
+        assertEquals(200, layout.hide().w());
+        assertEquals(20 + ControlPanelLayout.HEIGHT - ControlPanelLayout.ROW, layout.hide().y());
+        var bottom = ControlPanelLayout.bottomRows(H);
+        for (Slot other : List.of(bottom.url(), bottom.xButton(), bottom.widthButton(), bottom.spinButton())) {
+            Rect a = new Rect(bottom.hide().x(), bottom.hide().y(), bottom.hide().w(), ControlPanelLayout.ROW);
+            assertFalse(a.intersects(new Rect(other.x(), other.y(), other.w(), ControlPanelLayout.ROW)), "bottom rows: " + other);
         }
     }
 

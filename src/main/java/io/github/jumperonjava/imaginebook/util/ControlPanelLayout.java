@@ -13,7 +13,7 @@ public final class ControlPanelLayout {
     public static final int ROW = 20;
     public static final int GAP = 4;
     public static final int MARGIN = 4;
-    public static final int ROWS = 5;
+    public static final int ROWS = 6;
     public static final int HEIGHT = ROWS * ROW + (ROWS - 1) * GAP;
     public static final int MAX_WIDTH = 200;
     public static final int MIN_WIDTH = 160;
@@ -32,7 +32,7 @@ public final class ControlPanelLayout {
     public record Slots(Slot add, Slot remove, Slot url,
                         Slot xButton, Slot xField, Slot yButton, Slot yField,
                         Slot widthButton, Slot widthField, Slot heightButton, Slot heightField,
-                        Slot spinButton, Slot spinField) {}
+                        Slot spinButton, Slot spinField, Slot hide) {}
 
     private ControlPanelLayout() {}
 
@@ -60,7 +60,7 @@ public final class ControlPanelLayout {
 
     /**
      * Add and Remove on top, the link under them, then position, size and rotation, each a small
-     * button (scroll over it to nudge the value) next to its field.
+     * button (scroll over it to nudge the value) next to its field, and the hidden-link toggle last.
      */
     public static Slots panel(int x, int y, int width) {
         int half = (width - GAP) / 2;
@@ -74,7 +74,8 @@ public final class ControlPanelLayout {
                 new Slot(right, row[2], ROW), new Slot(right + ROW + 2, row[2], field),
                 new Slot(x, row[3], ROW), new Slot(x + ROW + 2, row[3], field),
                 new Slot(right, row[3], ROW), new Slot(right + ROW + 2, row[3], field),
-                new Slot(x, row[4], ROW), new Slot(x + ROW + 2, row[4], field));
+                new Slot(x, row[4], ROW), new Slot(x + ROW + 2, row[4], field),
+                new Slot(x, row[5], width));
     }
 
     /** The original two rows along the bottom edge, for screens too narrow for a side panel. */
@@ -91,6 +92,7 @@ public final class ControlPanelLayout {
                 new Slot(col[2], second, ROW), new Slot(col[2] + 24, second, field),
                 new Slot(col[3], top, ROW), new Slot(col[3] + 24, top, field),
                 new Slot(col[3], second, ROW), new Slot(col[3] + 24, second, field),
-                new Slot(col[4], second, ROW), new Slot(col[4] + 24, second, field));
+                new Slot(col[4], second, ROW), new Slot(col[4] + 24, second, field),
+                new Slot(col[4], top, column));  // the free top cell of the last column
     }
 }

@@ -10,6 +10,8 @@ import io.github.jumperonjava.imaginebook.util.ControlPanelLayout;
 import io.github.jumperonjava.imaginebook.util.LinkCodes;
 import io.github.jumperonjava.imaginebook.util.ImageFit;
 import io.github.jumperonjava.imaginebook.util.ImageTags;
+import io.github.jumperonjava.imaginebook.util.HiddenImages;
+import net.minecraft.client.gui.components.Tooltip;
 import io.github.jumperonjava.imaginebook.resolvers.AsyncImageDownloader;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -129,7 +131,17 @@ public abstract class NewBookEditScreenMixin extends Screen implements BookEditS
 
     private Button removeButton;
     private Button addButton;
+    private Button hideButton;
     private Component error;
+
+    /** How a picture goes into the page: the hidden form when the toggle is on and the source fits. */
+    private String imaginebook$write(ImageData image) {
+        return HiddenImages.write(image, Config.INSTANCE.data().hideLinks, I18n.get("imaginebook.hidden.caption"));
+    }
+
+    private static Component imaginebook$hideLabel() {
+        return Component.translatable(Config.INSTANCE.data().hideLinks ? "imaginebook.gui.hide.on" : "imaginebook.gui.hide.off");
+    }
 
     protected NewBookEditScreenMixin(Component title) {
         super(title);
@@ -217,7 +229,7 @@ public abstract class NewBookEditScreenMixin extends Screen implements BookEditS
     }
 
     void addCurrentPageImage(ImageData image) {
-        setCurrentPageContent(getCurrentPageContent() + image.bookString());
+        setCurrentPageContent(getCurrentPageContent() + imaginebook$write(image));
         updateDisplayImages();
     }
 
@@ -360,6 +372,19 @@ public abstract class NewBookEditScreenMixin extends Screen implements BookEditS
             }));
         }, spinField));
 
+        // Global switch, saved in imaginebook.json; pressing it rewrites the selected picture at once.
+        var hideSlot = slots.hide();
+        hideButton = addRenderableWidget(Button.builder(imaginebook$hideLabel(), (b) -> {
+            Config.INSTANCE.mutateData(d -> {
+                d.hideLinks = !d.hideLinks;
+                return d;
+            });
+            b.setMessage(imaginebook$hideLabel());
+            if (currentEdited != -1) mutateImage(currentEdited, d -> d);
+        }).tooltip(Tooltip.create(Component.translatable("imaginebook.gui.hide.tooltip")))
+                .pos(hideSlot.x(), hideSlot.y()).size(hideSlot.w(), elementHeight).build());
+
+        hideButton.visible = false;
         removeButton.visible = false;
         urlField.setVisible(false);
         xPosField.setVisible(false);
@@ -524,7 +549,7 @@ public abstract class NewBookEditScreenMixin extends Screen implements BookEditS
         var original = new ImageData(getCurrentPageImage(id));
         var modifiedImage = function.apply(original);
         // Count image tags only, exactly as the picture list does; counting every [..] rewrote "[1]" instead (1.3.1.0).
-        setCurrentPageContent(ImageTags.replace(getCurrentPageContent(), id, modifiedImage.bookString()));
+        setCurrentPageContent(ImageTags.replace(getCurrentPageContent(), id, imaginebook$write(modifiedImage)));
         updateDisplayImages();
     }
 
@@ -673,7 +698,7 @@ public abstract class NewBookEditScreenMixin extends Screen implements BookEditS
             for (var field : List.of(urlField, xPosField, yPosField, widthField, heightField, spinField)) {
                 field.setVisible(editing);
             }
-            for (var button : List.of(xPosButton, yPosButton, widthButton, heightButton, spinButton)) {
+            for (var button : List.of(xPosButton, yPosButton, widthButton, heightButton, spinButton, hideButton)) {
                 button.visible = editing;
             }
         }

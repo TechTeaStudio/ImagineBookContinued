@@ -8,5 +8,9 @@
   "imaginebook.gui.urlhere": "Вставьте ссылку сюда",
   "imaginebook.gui.extended.false": "Обычный режим",
   "imaginebook.gui.extended.true": "Расширеный режим",
-  "imaginebook.error.paste_too_large": "Вставка превысит лимит книги в %s страниц. Текст не изменён."
+  "imaginebook.error.paste_too_large": "Вставка превысит лимит книги в %s страниц. Текст не изменён.",
+  "imaginebook.gui.hide.on": "Скрыть ссылку: вкл",
+  "imaginebook.gui.hide.off": "Скрыть ссылку: выкл",
+  "imaginebook.gui.hide.tooltip": "Вкл: картинки с Imgur и clovi записываются подписью с невидимым кодом, в тексте страницы нет ссылки. Включай только там, где сервер разрешает картинки в книгах.",
+  "imaginebook.hidden.caption": "Картинка"
 }

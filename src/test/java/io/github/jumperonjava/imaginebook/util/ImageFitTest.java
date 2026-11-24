@@ -52,7 +52,7 @@ class ImageFitTest {
     @Test
     void editorUsesTheFixes() throws IOException {
         String editor = Files.readString(Path.of("src/main/java/io/github/jumperonjava/imaginebook/mixin/NewBookEditScreenMixin.java"));
-        assertTrue(editor.contains("ImageTags.replace(getCurrentPageContent(), id, modifiedImage.bookString())"), "tags found by ImageTags");
+        assertTrue(editor.contains("ImageTags.replace(getCurrentPageContent(), id, imaginebook$write(modifiedImage))"), "tags found by ImageTags");
         assertFalse(editor.contains("Pattern.compile(\"\\\\[.*?\\\\]\")"), "no lookup by any bracket");
         assertTrue(editor.contains("new ImageData(\"\", (short) ImageFit.PAGE_X, (short) ImageFit.PAGE_Y, 1, 1)"), "new picture starts on the page");
         assertTrue(editor.contains("ImageFit.percent("), "a new picture is fitted once it has loaded");

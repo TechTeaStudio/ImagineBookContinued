@@ -32,12 +32,24 @@ public final class ImageTags {
 
     private ImageTags() {}
 
+    /**
+     * Every picture in page text, visible tags and hidden pictures (caption plus invisible code, see
+     * HiddenImages) alike, in page order. This order is the picture index everywhere: the picture list
+     * (ImageSerializer.parseSafeModeImages) and the editor's rewrite (replace) must agree on it.
+     */
     public static List<Span> find(String text) {
         List<Span> spans = new ArrayList<>();
+        for (HiddenImages.Decoded d : HiddenImages.findAll(text)) {
+            spans.add(new Span(d.start(), d.end()));
+        }
         Matcher matcher = PATTERN.matcher(text);
         while (matcher.find()) {
-            spans.add(new Span(matcher.start(), matcher.end()));
+            Span tag = new Span(matcher.start(), matcher.end());
+            if (spans.stream().noneMatch(s -> s.start() < tag.end() && tag.start() < s.end())) {
+                spans.add(tag);
+            }
         }
+        spans.sort(java.util.Comparator.comparingInt(Span::start));
         return spans;
     }
 
@@ -54,7 +66,13 @@ public final class ImageTags {
     }
 
     public static String strip(String text) {
-        return PATTERN.matcher(text).replaceAll("");
+        StringBuilder out = new StringBuilder();
+        int position = 0;
+        for (Span span : find(text)) {
+            out.append(text, position, span.start());
+            position = span.end();
+        }
+        return out.append(text.substring(position)).toString();
     }
 
     /**
